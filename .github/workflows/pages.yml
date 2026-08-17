@@ -1,0 +1,88 @@
+name: pages
+# ONE GitHub Pages site, two environments that never wipe each other:
+#   /          → production (built from main)
+#   /staging/  → staging   (built from staging)
+#
+# GitHub Pages hosts one site per repo, and each deploy REPLACES it entirely.
+# So every deploy must contain BOTH environments. This workflow rebuilds both
+# branches into a single artifact and deploys it, so neither clobbers the other.
+#
+# Requires: Settings → Pages → Source = GitHub Actions.
+#
+# Branch names below must match repo.stagingBranch / repo.mainBranch in sunim.config.json.
+# If your repo uses develop/master or other names, change them here too (staging→preview, main→prod).
+on:
+  push:
+    branches: [staging, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # --- staging: always build it → out-staging ---
+      - name: Checkout staging
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          path: staging-src
+      - name: Build staging
+        working-directory: staging-src
+        run: |
+          npm ci
+          npm test
+          npm run build-storybook -- -o "$GITHUB_WORKSPACE/out-staging"
+
+      # --- production: build from main if it exists → out-prod ---
+      - name: Checkout main
+        id: main
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-src
+      - name: Build production
+        if: steps.main.outcome == 'success'
+        working-directory: main-src
+        run: |
+          npm ci
+          npm run build-storybook -- -o "$GITHUB_WORKSPACE/out-prod"
+
+      # --- assemble one site: root = production, /staging = staging ---
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          if [ -d out-prod ]; then
+            cp -r out-prod/. _site/
+          else
+            printf '<!doctype html><meta http-equiv="refresh" content="0; url=./staging/">' > _site/index.html
+          fi
+          mkdir -p _site/staging
+          cp -r out-staging/. _site/staging/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
