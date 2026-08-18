@@ -8,9 +8,13 @@ This file holds what generalises; the memory file holds what one design system t
 
 ---
 
-## Step 0 · Pre-flight
+## Step 0 · Preflight — the config gate, then your surfaces
 
-Before touching a component, confirm the three surfaces answer:
+**First the shared gate:** `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"`. Exit 1 means this
+project isn't set up — stop and say so. The PM runs this at the front door, but `/productive-crew:test`
+can be typed directly, so never assume it already ran.
+
+**Then your own surfaces** — the three QA specifically depends on:
 
 | Check | How |
 |---|---|

@@ -20,6 +20,18 @@ Every Airtable table and column name lives in `productive.config.json` — `airt
 exactly; Airtable resolves names case-sensitively, so a guessed capital fails at runtime. If a name
 in the config doesn't exist in the base, report the mismatch — don't guess the nearest one.
 
+## Preflight — the one gate every agent passes
+
+Two checks, not one, and they are not interchangeable:
+
+- **Config gate — `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"`.** Deterministic, no network.
+  Is this project set up at all? Any agent can run it, and any agent invoked directly rather than
+  through the PM **must** run it first. Exit 1 → `/productive-crew:setup`, stop.
+- **Surface check — per agent, not shared.** Whether the services *you* depend on answer right now.
+  It can't be a script: `whoami` and `ping` are MCP calls, and each agent depends on different
+  surfaces. QA needs Figma, Airtable and the Storybook preview; the Engineer needs Figma; DevOps
+  needs Airtable. Check yours, report what's down, and don't work half-blind.
+
 ## Front door — every request starts at the PM
 
 Any component request ("build Button") goes to the **pm** agent first. Never skip to building,
