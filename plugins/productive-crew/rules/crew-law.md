@@ -20,6 +20,23 @@ Every Airtable table and column name lives in `productive.config.json` — `airt
 exactly; Airtable resolves names case-sensitively, so a guessed capital fails at runtime. If a name
 in the config doesn't exist in the base, report the mismatch — don't guess the nearest one.
 
+## The loop — every agent is a worker, not a one-shot
+
+```
+read → build → test → parity        until clean
+```
+
+An agent does not do its work once, report what broke, and hand the mess on. It **re-runs its own
+checks and fixes what they catch**, until they pass or it genuinely can't proceed.
+
+- **Never hand off red.** A failing check is yours to fix, not the next agent's to discover.
+- **The loop is bounded.** If the same check fails twice with the same cause and your fix moved
+  nothing, stop. Looping on an unchanged failure burns the session and teaches you nothing.
+- **Stopping is a real outcome.** Report the blocker card — what broke, what you tried, and the one
+  thing that would unblock it. That is a worker stopping, not a worker giving up.
+- **Never widen scope to get green.** If passing means changing something outside your remit —
+  a token's value, another component, the design itself — that is a stop-and-ask, not a fix.
+
 ## Preflight — the one gate every agent passes
 
 Two checks, not one, and they are not interchangeable:

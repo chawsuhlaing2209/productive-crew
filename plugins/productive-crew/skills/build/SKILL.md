@@ -11,7 +11,12 @@ description: Build one component. Routes through the PM front door — checks se
 2. Airtable registry — find `$ARGUMENTS`; read its status + Figma node, or offer to register it.
 3. Create the Asana ticket + subtasks, assign the Engineer.
 
-Then the **engineer** agent builds `$ARGUMENTS` using the Figma node **from Airtable** —
-code + stories + vitest → staging. Finish with the Engineer card and hand off to QA.
+Then the **engineer** agent builds `$ARGUMENTS` using the Figma node **from Airtable**, through
+its six ordered stages — **schema → tokens → implement → test → document → parity** — looping on
+each until its check is green. It pushes to staging only on green. Finish with the Engineer card
+and hand off to QA.
+
+A stage that can't go green is a **stop and ask**, reported as a blocker card. It is never a
+handoff with a known failure attached.
 
 Never ask the user for a Figma node. Only ask when you can't find the node in Airtable for requested component.
