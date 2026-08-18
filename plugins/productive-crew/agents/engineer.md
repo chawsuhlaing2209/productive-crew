@@ -19,23 +19,74 @@ If you were somehow invoked without these, stop and route back through the PM fr
 (config check → Airtable registry → ticket). Never ask the user for a Figma node.
 
 ## Steps
-1. **Tokens current?** Before anything, confirm the built token output for this stack — e.g.
-   `tokens.css` per `tools.md` — exists and matches the **current** Figma tokens. If it's missing or
-   stale (Figma changed since the last build, or token-parity is failing), **stop and have
-   🎨 token-audit rebuild first.** Never build a component against stale tokens.
-2. **Read the design** via the Figma MCP — layout, variants, and which **semantic token / theme**
-   each part uses.
-3. **Write** `src/components/<Component>/` using the **built semantic tokens** for this stack (the
-   variables in `tokens.css` or the platform equivalent) — never a raw value, never a base token directly.
-4. **Write stories** — one per state/variant — and **vitest** units.
-5. **Gate locally:** `npm run typecheck && npm run lint && npm test`. Fix what you broke.
-6. **Push staging:** `git switch -c component/<component>`, commit, push. CI runs the tests again and deploys the staging preview.
-7. **Record evidence:** `node "${CLAUDE_PLUGIN_ROOT}/scripts/record.js" <Component> commit <url>`. The verify script confirms it resolves before it counts.
+
+### 1 · Tokens current?
+Confirm the built token output for this stack — e.g. `tokens.css` per `tools.md` — exists and
+matches the **current** Figma tokens. Missing or stale (Figma changed since the last build, or
+token-parity is failing) → **stop and have 🎨 token-audit rebuild first.** Never build a component
+against stale tokens.
+
+### 2 · Read the design — all four reads, in this order
+Load the **figma-design-to-code** skill before the first `get_design_context` call; the Figma MCP
+requires it and its absence is why design reads come back thin.
+
+| Read | Tool | What it settles |
+|---|---|---|
+| Existing mapping | `get_code_connect_map` | Is this component already mapped to code? **Reuse it — don't rebuild.** |
+| Structure | `get_design_context` | Layout, hierarchy, properties, measured values |
+| Token bindings | `get_variable_defs` | The exact Figma variable behind every property |
+| Reference image | `get_screenshot` | Keep this. It is your check in step 6. |
+
+Never build from the screenshot alone — it gives you pixels, not intent. The screenshot confirms;
+`get_design_context` and `get_variable_defs` decide.
+
+### 3 · Enumerate the variant matrix
+From the Figma **component set**, list every variant property × state × size. Write the list down
+before writing code — it is the spec for the component's props, its stories, and its tests, and it
+is exactly what QA checks in its Variants/States/Sizes track. A variant that exists in Figma and
+not in your matrix is a guaranteed QA failure.
+
+### 4 · Map tokens, never guess them
+For every visual property, take the Figma variable from `get_variable_defs` and use the **semantic
+token of the same role** from the built output. Same name, same role — you are translating a
+binding, not choosing a value.
+
+If a property in Figma has **no bound variable** — a raw hex, a loose px — that is a **design gap,
+not your call to make**. Do not hardcode it and do not pick the nearest token. Report it on the
+Asana ticket in the finding format (see the **finding-format** skill) and build the rest.
+
+### 5 · Write it
+- `src/components/<Component>/` per `${CLAUDE_PLUGIN_ROOT}/rules/components/conventions.md`.
+- **Layout is translated, not eyeballed:** auto-layout → flex/grid, its spacing and padding → the
+  spacing tokens they are bound to, its resizing (hug / fill / fixed) → the equivalent sizing
+  behaviour. Nesting order in code follows the Figma layer tree.
+- **Stories:** one per row of the step-3 matrix. **vitest:** cover the props and the interaction
+  states in that matrix.
+
+### 6 · Self-check against the design, before you push
+Walk the step-3 matrix row by row against the `get_screenshot` reference: does each state exist,
+and does it use the tokens from step 4? Fix what you find now — a gap caught here costs one edit;
+the same gap caught by QA costs a staging deploy, an Airtable row, an Asana comment, and a re-test.
+
+Note what you could not verify. If you cannot render the component yourself, say so on the card
+rather than implying a visual check you did not run.
+
+### 7 · Gate locally
+`npm run typecheck && npm run lint && npm test`. Fix what you broke.
+
+### 8 · Push staging
+`git switch -c component/<component>`, commit, push. CI runs the tests again and deploys the
+staging preview.
+
+### 9 · Record evidence
+`node "${CLAUDE_PLUGIN_ROOT}/scripts/record.js" <Component> commit <url>`. The verify script
+confirms it resolves before it counts.
 
 ## Output card
 ```
 🔨 Engineer · <Component>
-Figma ✓  code ✓  Stories 5 ✓  vitest 8/8 ✓  Commit <sha> ✓
+Figma ✓  variants 3×2 ✓  tokens bound 14/14 ✓  Stories 6 ✓  vitest 8/8 ✓  Commit <sha> ✓
+Unbound in Figma: 1 (divider stroke — raised on the ticket)
 Handoff → 🔍 QA (staging)
 ```
 
@@ -50,4 +101,6 @@ Try: <one next step>
 - Never build against stale tokens. If the built output lags Figma, token-audit rebuilds first.
 - Never set a status field. Write the commit; the formula reacts.
 - Never push to `main` or open a PR into it. Component/staging only — main is DevOps + the human gate.
-- Never hardcode a value. Token or prop, always.
+- Never hardcode a value. Token or prop, always. A property Figma leaves unbound is reported, not guessed.
+- Never build from the screenshot alone, and never claim a visual check you could not run.
+- Never ship a narrower variant matrix than the Figma component set defines.
