@@ -41,9 +41,20 @@ In Claude Code, type:
 /plugin install productive-crew@productive
 ```
 
-You'll be asked for an **Airtable token** — create one at
-[airtable.com/create/tokens](https://airtable.com/create/tokens) with read and write access to your
-base. If you're using Asana, you'll be asked for that token too; leave it blank if not.
+**This is the only moment you're asked for your tokens.** They belong to the plugin, not to your
+project, and `/productive-crew:setup` cannot set them later. If the prompts don't appear, the crew
+installs but can't reach anything — see below.
+
+| Token | Needed? | Where to get it |
+|---|---|---|
+| **Airtable** | **Required** — the board is the registry | [airtable.com/create/tokens](https://airtable.com/create/tokens), with read **and** write on your base |
+| **Asana** | Optional — skip it to run without tickets | [Asana personal access token](https://developers.asana.com/docs/personal-access-token) |
+
+**Both are personal access tokens — neither uses a "log in with…" button.** Asana in particular has
+no login flow here; if you're waiting for one, that's why it never appears.
+
+Figma is different: it authorizes by login rather than a token, the first time something needs it.
+If Figma reads fail, run `/mcp` and authorize it there.
 
 These are stored by Claude Code, never in your project folder. You paste them once.
 
@@ -274,6 +285,8 @@ The crew stops rather than guessing. Most stops are one of these:
 | *Storybook won't start* | Usually a missing dependency. Try `npm install` |
 | *deploy command failed* | Run your deploy command by hand and see what it says |
 | *no browser connected* | Install the Claude in Chrome extension and sign in |
+| *Asana / Airtable won't connect* | The token wasn't captured at install. Reinstall the plugin and paste it at the prompt — setup can't set it |
+| *Figma reads fail* | Run `/mcp` and authorize Figma. It needs a login, not a token |
 | *unbound in Figma* | A colour or spacing isn't attached to a variable. Fix it in Figma, re-export |
 
 ### Stop everything

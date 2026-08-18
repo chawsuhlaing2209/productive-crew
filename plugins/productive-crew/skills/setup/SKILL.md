@@ -34,6 +34,26 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
 
 **The rule for every question below: detected → confirm in one line. Missing → ask fresh.**
 
+## 0b · Check the crew's own connections — before the interview
+
+The crew talks to Airtable, Asana and Figma through **its own MCP servers**, not through any
+connector the main session happens to have. Those are configured **when the plugin is installed**,
+not here — setup cannot set them, and it must not pretend otherwise. Check them first, because
+every one of them fails later and confusingly if it is wrong now.
+
+| Check | If it fails, say exactly this |
+|---|---|
+| Airtable — `ping` | The Airtable token wasn't captured at install. It is a **personal access token**, required, from `airtable.com/create/tokens`, with read+write on the base. Reinstall the plugin and paste it at the prompt. |
+| Asana — any read call | The Asana token wasn't captured at install. Asana has **no login flow here** — it needs a **personal access token** (see `developers.asana.com/docs/personal-access-token`). Reinstall and paste it, or say you're running without tickets. |
+| Figma — `whoami` | The Figma server needs an OAuth authorization, which only an interactive session can do. Send them to `/mcp`. |
+
+**A missing Asana token is a choice, not a blocker** — the crew runs without ticketing. A missing
+Airtable token is a blocker: the board is the registry.
+
+**Never work around a missing token** by reaching for a connector the main session can see. The
+agents' tool patterns point at the plugin's servers; a connector that works for you does not work
+for them, and substituting one produces a run that looks fine and writes nothing.
+
 ## 1 · Interview
 
 1. **Design-system name** → `name`. (Default to the repo/package name — confirm.)
