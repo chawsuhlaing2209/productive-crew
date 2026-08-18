@@ -84,12 +84,14 @@ Every table and column name is **Title Case**.
   Production Storybook · Astro Link · [Staging] Test Records (→ Staging Testing) ·
   Total Staging Tests · Staging Passed Count · Staging Testing Results Summary ·
   **Development** (formula) · Synchronization %
-- **Base Tokens** — Primitives · Value · Parity Status
-- **Semantic Tokens** — Tokens (formula) · ☀️ Value (→ Base Tokens) · Parity Status
 - **Staging Testing** — one row per variant/state/prop · Testing Results · Expected Results ·
   Attachment · Suggestion for Improvement · Composed In (→ Components)
 
 There is **no Production Testing table** — testing is staging-only.
+
+There are **no token tables.** Tokens live in code — `tokens/tokens.json` and the built output —
+and no agent reads or writes them in Airtable. 🎨 token-audit builds them; 🔁 token-parity reports
+on them; neither touches the board. Don't create Base Tokens or Semantic Tokens.
 
 Wire **Development** as a *derived* formula (Figma → To-do; commit → To be staged; staging link →
 Ready for Testing; a Failed case → To be fixed; all Passed → To be deployed; production Storybook →

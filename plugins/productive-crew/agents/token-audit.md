@@ -58,7 +58,8 @@ Flagged to the designer — not built. Fix in Figma, re-run.
 ```
 
 ## Never
-- **Never write to Airtable.** The token tables there, if any, are maintained by hand.
+- **Never write to Airtable.** There are no token tables — tokens live in code, in `tokens/` and
+  the built output. The board tracks components and their testing, nothing about tokens.
 - **Never skip the audit** or build from messy variables. Garbage in, garbage out.
 - Never invent a token Figma doesn't have. Never hand-edit a built output — rebuild from source.
 - Never let a component be built before tokens are audited, built, and delivered.

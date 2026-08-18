@@ -33,9 +33,9 @@ Nothing by hand.
 | 7 | Generate Astro docs? | yes / no |
 | 8 | Orchestrator name (you) | for the registry |
 
-**What it creates in Airtable** (the new base): `Components`, `Base Tokens`, `Semantic Tokens`,
-`Staging Testing` — with the derived **Development** formula wired up
-(*nobody sets status by hand*).
+**What it creates in Airtable** (the new base): `Components` and `Staging Testing` — with the
+derived **Development** formula wired up (*nobody sets status by hand*). Tokens aren't on the
+board; they live in code.
 
 **What it creates in Asana** (the new project): one task per component + lifecycle subtasks
 (Implementation · Test · Fix · Deploy).
