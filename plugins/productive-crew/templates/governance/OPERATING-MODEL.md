@@ -84,7 +84,7 @@ Three artifacts, one cadence.
 
 | Agent | Level | Scope | Verifier | Kill switch |
 |---|---|---|---|---|
-| 🔁 token-parity | Autonomous | `tokens/` — Parity Status only | parity-check | `AGENTS_PAUSED` |
+| 🔁 token-parity | Autonomous | read-only — writes nothing | parity-check | `AGENTS_PAUSED` |
 | 🎨 token-audit | Senior | Figma read → `tokens.json` + Style Dictionary build (no Airtable) | token-parity | `AGENTS_PAUSED` |
 | 🔍 QA | Senior | Storybook-testing tables, Asana comments, verdict | test records + PM verify | `AGENTS_PAUSED` |
 | 🔨 Engineer | Junior | `src/components/`, commits, PR→staging | vitest + typecheck/lint + QA | `AGENTS_PAUSED` |

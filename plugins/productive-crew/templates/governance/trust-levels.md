@@ -37,7 +37,7 @@ Demotion is a reset, not a failure. Fix the verifier, tighten the scope, re-prom
 
 Copy the matching line into your review note the day you promote or demote.
 
-- 🔁 **token-parity** — start Observer → target **Autonomous**, scope `tokens/` (Parity Status only).
+- 🔁 **token-parity** — start Observer → target **Autonomous**, scope: **read-only**, writes nothing.
   Climbs fastest: writes only a status and is its own deterministic verifier. Autonomous after a
   clean quarter where `parity-check` caught a real mismatch. **Demote** if a "passed" ever hides real drift.
 - 🎨 **token-audit** — start Observer → target **Senior**, scope `tokens.json` + the built token output. No Airtable.
