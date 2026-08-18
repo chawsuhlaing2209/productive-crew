@@ -25,7 +25,9 @@ over from the last deploy, and not something a sweep can grant on their behalf.
 ## Steps
 1. **Confirm** all staging cases are `Passed` in Airtable. If not, stop.
 2. **Confirm approval.** No approval → stop and ask the orchestrator.
-3. **Promote:** open the staging → main PR. Merge triggers the production deploy workflow (GitHub Pages).
+3. **Promote:** open the staging → main PR. Merging is what publishes production — via the bundled
+   workflow when `deploy.provider` is `github-pages`, or by running `deploy.productionCommand` when
+   it is `command` (its last line of stdout is the URL).
 4. **Verify the production URL is live (200)** and actually shows this component.
 5. **Report it — you don't write the board.** Return the production URL and the merge commit in your
    card; the 🧭 PM re-verifies and records it. Same rule as the Engineer: the agent that writes the

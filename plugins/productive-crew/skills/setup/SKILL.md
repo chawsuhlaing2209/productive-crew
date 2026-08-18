@@ -60,7 +60,11 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
      this costs, plainly: **no staging link means no QA stage and no test records** — the lifecycle
      stops after the Engineer's own checks. It is a starting state, not a destination. Default to
      **yes** whenever the repo has a remote; only take no when it genuinely has nowhere to deploy.
-   - **Yes** → keep the full pipeline.
+   - **Yes** → keep the full pipeline. Then ask **who publishes**:
+     `deploy.provider: github-pages` (the bundled workflow) or `command` (you run a deploy command).
+     Choose `command` whenever GitHub Actions isn't usable — a locked or restricted account, an org
+     policy, or a host they already have. Write the command into `deploy.stagingCommand`, and tell
+     them the one rule: **it must print the deployed URL as its last line of stdout.**
 8. **Astro docs?** — yes / no (enables doc-generator).
 9. **Orchestrator name** (you) → `governance/registry.md`.
 

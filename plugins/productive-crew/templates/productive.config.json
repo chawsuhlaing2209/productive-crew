@@ -101,7 +101,11 @@
     "schedule": "daily"
   },
   "deploy": {
-    "$note": "true = the full pipeline: CI deploys the staging Storybook, the PM records that link, QA tests it, DevOps promotes to production. false = NOT WIRED YET: no CI, no staging link, and therefore no QA stage and no Staging Testing rows — the Engineer's own checks are the only gate and the board tracks the commit alone. Turn it on as soon as the repo has a remote and Pages is enabled.",
-    "enabled": true
+    "$note": "enabled=false is NOT WIRED YET: no staging link, so no QA stage and no Staging Testing rows. provider decides WHO publishes the staging build — the crew only needs a URL it can verify, and it does not care who produced it.",
+    "enabled": true,
+    "provider": "github-pages",
+    "$providerNote": "github-pages = the bundled .github/workflows/pages.yml builds and publishes on push. command = you publish, with the commands below — use this for Vercel, Netlify, Cloudflare Pages, surge, an internal host, or whenever GitHub Actions is unavailable to you. The contract for a command is exactly one thing: print the deployed URL as the LAST line of stdout. The Engineer captures that line, verifies it answers 200, and reports it.",
+    "stagingCommand": "",
+    "productionCommand": ""
   }
 }

@@ -129,11 +129,21 @@ is raised as a finding. Fix and re-run until clean.
 
 ## Then, and only on green
 
-1. **Push staging:** `git switch -c component/<component>`, commit, push. CI re-runs the tests and
-   deploys the staging preview.
-2. **Wait for the staging deploy, then prove it.** CI publishes the staging Storybook. Fetch the
-   URL and confirm it is **live (200) and shows your component's stories** — not the last build's.
-   A deploy that hasn't finished is not evidence; wait for it or report that you're waiting.
+1. **Push staging:** `git switch -c component/<component>`, commit, push.
+
+2. **Publish the staging Storybook.** Read `deploy.provider` in `productive.config.json`:
+
+   | provider | what you do |
+   |---|---|
+   | `github-pages` | CI publishes on push. Wait for the run, then take the URL from `repo.stagingUrl`. |
+   | `command` | Run `deploy.stagingCommand` yourself. Its **last line of stdout is the URL.** |
+
+   Either way, **prove it**: the URL answers **200** and shows *your* component's stories, not the
+   last build's. A deploy that hasn't finished is not evidence — wait for it, or report that you're
+   waiting. A publish command that fails is a blocker you own, not something to hand on.
+
+   If `deploy.enabled` is false there is no staging build and no QA stage. Say so plainly in your
+   card rather than reporting success: the component stops with you.
 
 3. **Report it — your card IS the handoff.** You have no board access, by design. Return the
    commit sha, the verified staging URL, and the ticket id in your card, and the 🧭 PM records

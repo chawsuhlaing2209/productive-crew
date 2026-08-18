@@ -81,6 +81,16 @@ from **staging only**, opened by DevOps with the human's approval. **The merge t
 the staging Storybook — that deploy is the evidence.** Branch protection (PR-only, no direct pushes,
 required checks) makes the rule real, not just written. Full rule: `rules/git.md` in the productive-crew plugin.
 
+## Who publishes is configurable (`deploy.provider`)
+
+The crew needs a **staging URL it can verify**. It does not care who produced it.
+
+- **`github-pages`** — the bundled `.github/workflows/pages.yml` builds and publishes on push.
+- **`command`** — you publish. Set `deploy.stagingCommand` / `deploy.productionCommand` to anything
+  that deploys a static Storybook and **prints the deployed URL as its last line of stdout**:
+  Vercel, Netlify, Cloudflare Pages, surge, an internal host. Use this whenever GitHub Actions
+  isn't available to you — a locked account, a private runner policy, an org that disables it.
+
 ## Deployment is optional (`deploy.enabled`, asked at /productive-crew:setup)
 
 - **true** (default) — the full pipeline above: Engineer → staging → CI deploys the staging
