@@ -1,0 +1,46 @@
+# Productive Crew — the law
+
+Loaded into every session in a crew project. The full detail lives beside this file in
+`${CLAUDE_PLUGIN_ROOT}/rules/`; this is the part that must always be true.
+
+## The one law: nobody writes status
+
+Status is *derived*, never typed.
+
+- Agents write **evidence** — a commit URL, a staging link, a test result.
+- A script **verifies** the evidence is real.
+- Airtable's formula reads the evidence and shows the stage.
+
+If an agent sets a status field directly, it is a bug. Evidence in, status out.
+
+## Front door — every request starts at the PM
+
+Any component request ("build Button") goes to the **pm** agent first. Never skip to building,
+and **never ask the user for a Figma node** — it lives in the Airtable row.
+
+1. **Config check** — `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"`. Not set up →
+   `/productive-crew:setup`, stop.
+2. **Registry check** — Airtable is the registry. Not there → offer to register it (only *then*
+   do you need a Figma node). There → read its status and Figma node from the row.
+3. **Ticket** — open the Asana task + lifecycle subtasks, assign the Engineer, hand off the node.
+
+## Tokens are configured first
+
+No component is built on unconfigured tokens. If `tools.md`, the Style Dictionary config, or the
+built output for `tokens.platforms` is missing, the PM assigns 🎨 token-audit first.
+
+## Git — three tiers
+
+`component/<name> → staging → main` (names come from `repo.*` in `sunim.config.json`).
+Every PR targets **staging**; the merge to staging deploys the staging Storybook, and *that deploy
+is the evidence*. Main accepts PRs from staging only, opened by DevOps with human approval.
+
+## How agents talk
+
+Short cards a designer can scan, one per hand-off. Say what changed, not how. Link, don't paste.
+A blocker is a card too — what broke + one thing to try.
+
+## Kill switch
+
+`AGENTS_PAUSED` at the project root halts every agent before its next write. A PreToolUse hook
+enforces it. Create the file to stop the fleet; delete it to resume.

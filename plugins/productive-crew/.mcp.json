@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "figma": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "airtable": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "airtable-mcp-server"
+      ],
+      "env": {
+        "AIRTABLE_API_KEY": "${user_config.airtable_token}",
+        "AIRTABLE_TOKEN": "${user_config.airtable_token}"
+      }
+    },
+    "asana": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@roychri/mcp-server-asana"
+      ],
+      "env": {
+        "ASANA_ACCESS_TOKEN": "${user_config.asana_token}",
+        "ASANA_TOKEN": "${user_config.asana_token}"
+      }
+    }
+  }
+}

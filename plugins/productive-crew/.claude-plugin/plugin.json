@@ -1,0 +1,30 @@
+{
+  "name": "productive-crew",
+  "displayName": "Productive Crew",
+  "version": "0.1.0",
+  "description": "A design-system crew — Figma to tokens to component to tested, deployed Storybook. Agents write evidence; a script verifies it; the board derives status. Nobody types a status.",
+  "author": {
+    "name": "Chaw Su Hlaing",
+    "url": "https://github.com/chawsuhlaing2209"
+  },
+  "repository": "https://github.com/chawsuhlaing2209/productive-crew",
+  "license": "MIT",
+  "keywords": ["design-system", "design-tokens", "figma", "storybook", "airtable", "asana", "qa"],
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "airtable_token": {
+      "type": "string",
+      "title": "Airtable personal access token",
+      "description": "Read/write access to the base that holds your component registry. Create one at airtable.com/create/tokens.",
+      "sensitive": true,
+      "required": true
+    },
+    "asana_token": {
+      "type": "string",
+      "title": "Asana personal access token",
+      "description": "Used to open and sync the component tickets. Leave blank to run the crew without ticketing.",
+      "sensitive": true
+    }
+  }
+}

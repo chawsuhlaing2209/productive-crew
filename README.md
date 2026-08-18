@@ -1,44 +1,87 @@
-# Sunim Design System — agentic crew
+# Productive Crew
 
-A local design-system crew you run from your editor's chat, on your Pro plan. No API key.
-Figma → code → test → ship, with a fleet of agents you can watch, verify, and govern.
+A design-system crew for Claude Code, installable into any project.
 
-## New here?
+Figma → tokens → component → tested, deployed Storybook — run from your editor's chat.
+**Nobody types a status.** Agents write evidence (a commit URL, a staging link, a test result),
+a script verifies the evidence is real, and Airtable's formula derives the stage from it.
 
-Read **`getting-started.md`**, then run **`/setup`** — it interviews you, creates your new
-Airtable base + Asana project, and writes your `.env` and `sunim.config.json`. No manual setup.
+## Install
 
-## Run it (after setup)
+```
+/plugin marketplace add chawsuhlaing2209/productive-crew
+/plugin install productive-crew@productive
+```
 
-1. Open this repo in the Claude Desktop **Code** tab (or Cursor / Codex). `npm install`.
-2. Drive the crew from chat:
+You'll be asked for an Airtable token (required) and an Asana token (optional) at install time.
+They're stored in Claude Code's plugin config — never in your repo.
 
-| Type | Does |
+Then, in the project you want a design system in:
+
+```
+/productive-crew:setup
+```
+
+Setup detects what your repo already has — framework, branches, token pipeline, CI — confirms it,
+and scaffolds only what's missing. It never overwrites.
+
+## The crew
+
+| Agent | Owns | Level |
+|---|---|---|
+| 🎨 token-audit | Figma → tokens.json + Style Dictionary build | Senior |
+| 🔁 token-parity | Figma ↔ code token parity | Autonomous |
+| 🔨 engineer | Figma → code + vitest → PR to staging | Junior |
+| 🔍 qa | test staging then production → findings + verdict | Senior |
+| 🚀 devops | staging → main → production deploy | Junior (prod gated) |
+| 🧭 pm | verify records + links · sync Asana | Autonomous |
+| 📄 doc-generator | docs/ | Senior (optional) |
+
+## Commands
+
+| Command | Does |
 |---|---|
-| `/tokens` | 🎨 audit + rebuild tokens.json (Style Dictionary) from Figma |
-| `/parity` | 🔁 check Figma ↔ code token parity |
-| `/build <Component>` | 🔨 Figma → code + stories + vitest → staging |
-| `/test <Component>` | 🔍 test the deployed preview, log findings |
-| `/deploy <Component>` | 🚀 promote to production (needs your approval) |
-| `/sweep` | 🧭 verify the board + sync Asana |
+| `/productive-crew:setup` | onboard a repo — interview, create the board, scaffold the gaps |
+| `/productive-crew:build <Component>` | PM intake → Engineer builds → staging |
+| `/productive-crew:test <Component>` | QA tests it against Figma, logs findings |
+| `/productive-crew:deploy <Component>` | DevOps promotes staging → production (human-gated) |
+| `/productive-crew:tokens` | token audit — rebuild from Figma |
+| `/productive-crew:parity` | Figma ↔ code token parity check |
+| `/productive-crew:sweep` | PM sweep — verify the whole board |
 
-## How it's built
+## What lands in your repo
 
-- **`AGENTS.md`** — the rules every AI IDE reads. `CLAUDE.md` imports it.
-- **`.claude/agents/`** — the fleet (subagents). **`.claude/skills/`** — the slash workflows.
-- **`.claude/rules/`** — stack + token + component conventions, loaded when relevant.
-- **`governance/`** — the operating model, the **agent registry**, ADRs, review cadence.
-- **`scripts/`** — deterministic verifiers. Evidence only counts once these pass.
-- **`.github/workflows/`** — free CI: tests → deploy staging & production to GitHub Pages.
+Only `sunim.config.json` (names and ids, never a secret), `AGENTS.md` + `CLAUDE.md` (so Cursor and
+Codex read the same law), `governance/`, and whatever scaffolding you didn't already have.
+The agents, skills, rules, and scripts stay in the plugin — update the plugin to change them.
 
-## The rules that keep it safe
+## Kill switch
 
-- **Nobody writes status.** Agents write evidence; a script verifies it; Airtable's formula derives the stage.
-- **Every agent has a level and a scope** — see `governance/registry.md`.
-- **Kill switch:** create a file named `AGENTS_PAUSED` at the root to halt the fleet. Delete it to resume.
-- **Public repo** so GitHub Actions + Pages are free. Claude runs on your Pro login — no `ANTHROPIC_API_KEY`.
+Create `AGENTS_PAUSED` at your project root. A PreToolUse hook halts every agent before its next
+write. Delete the file to resume.
 
-## Still to fill in
+## Repo layout
 
-- The **semantic token naming hierarchy** in `.claude/rules/tokens.md` (unblocks token-audit step 6).
-- Your **orchestrator name** + first review date in `governance/registry.md` and `cadence.md`.
+```
+.claude-plugin/marketplace.json    the catalog
+plugins/productive-crew/
+├── .claude-plugin/plugin.json     manifest — incl. the token prompts
+├── agents/                        the seven crew members
+├── skills/                        the slash commands
+├── rules/                         git tiers, status ladder, stack, trust levels, the law
+├── scripts/                       preflight · verify · record · parity-check
+├── hooks/hooks.json               kill switch + session-start law injection
+├── .mcp.json                      figma · airtable · asana
+├── settings.json                  default permissions
+└── templates/                     what /setup scaffolds into a project
+```
+
+## Local development
+
+```
+/plugin marketplace add ./path/to/productive-crew
+/plugin install productive-crew@productive
+/reload-plugins
+```
+
+MIT.

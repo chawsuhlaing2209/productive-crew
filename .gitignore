@@ -1,8 +1,5 @@
+# This repo is the plugin marketplace, not a project the plugin scaffolds.
 node_modules/
-dist/
-build/
-storybook-static/
-.env
-.env.local
+.DS_Store
 **/.claude/settings.local.json
 _to_delete/
