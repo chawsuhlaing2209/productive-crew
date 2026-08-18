@@ -8,7 +8,7 @@ paths:
 **Agents here:** 🎨 token-audit (**Senior**) · 🔁 token-parity (**Autonomous**)
 
 **Allowed**
-- token-audit may rewrite `tokens.json` and the Airtable token tables — Senior, so merges are skimmed, not read line by line.
+- token-audit may rewrite `tokens.json` and the built output — Senior, so merges are skimmed, not read line by line. It has no Airtable access and writes no tokens there.
 - token-parity may write the Parity Status column and run unattended — Autonomous, audited monthly.
 
 **Not allowed**

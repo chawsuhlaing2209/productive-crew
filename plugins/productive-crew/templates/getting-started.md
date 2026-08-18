@@ -47,7 +47,7 @@ when you installed it, not in this repo. If one is missing the MCP server says s
 
 ## 3 · Bring your tokens in
 
-- **`/productive-crew:tokens`** — 🎨 reads your Figma variables, builds `tokens.json`, fills the Base + Semantic tables.
+- **`/productive-crew:tokens`** — 🎨 audits your Figma variables and builds them into code tokens (`tokens.json` → CSS variables, themed per Figma mode).
 - **`/productive-crew:parity`** — 🔁 confirms Figma and code tokens agree.
 
 ## 4 · Build your first component
