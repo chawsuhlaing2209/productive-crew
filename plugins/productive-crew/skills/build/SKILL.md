@@ -12,7 +12,7 @@ description: Build one component. Routes through the PM front door — checks se
 3. Create the Asana ticket + subtasks, assign the Engineer.
 
 Then the **engineer** agent builds `$ARGUMENTS` using the Figma node **from Airtable**, through
-its six ordered stages — **schema → tokens → implement → test → document → parity** — looping on
+its five ordered stages — **schema → tokens → implement → test → parity** — looping on
 each until its check is green. It pushes to staging only on green. Finish with the Engineer card
 and hand off to QA.
 
