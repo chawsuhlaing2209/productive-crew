@@ -1,0 +1,7 @@
+node_modules/
+/dist/
+/build/
+storybook-static/
+.env
+.env.local
+**/.claude/settings.local.json

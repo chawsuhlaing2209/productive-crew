@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|Bash|mcp__airtable.*|mcp__asana.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -f \"${CLAUDE_PROJECT_DIR}/AGENTS_PAUSED\" && { echo 'AGENTS_PAUSED is set — fleet halted. Delete the file to resume.' >&2; exit 2; } || exit 0"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/crew-context.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

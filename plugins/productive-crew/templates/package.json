@@ -1,0 +1,26 @@
+{
+  "name": "your-design-system",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build:docs": "astro build --root docs"
+  },
+  "devDependencies": {
+    "@storybook/react-vite": "^8.0.0",
+    "@storybook/addon-essentials": "^8.0.0",
+    "@storybook/addon-a11y": "^8.0.0",
+    "@testing-library/react": "^16.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

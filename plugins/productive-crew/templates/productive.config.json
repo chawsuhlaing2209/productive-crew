@@ -1,0 +1,86 @@
+{
+  "$comment": [
+    "Names and ids only, never a secret. The crew addresses Airtable by NAME and",
+    "resolves each name to your base's ids at startup, so a duplicated base needs",
+    "only a new airtable.baseId. Change a name only if your base renames the field."
+  ],
+  "airtable": {
+    "$comment": "Table and column names are Title Case, matching the base exactly. Airtable resolves table names case-sensitively.",
+    "baseId": "appXXXXXXXXXXXXXX",
+    "tables": {
+      "components": "Components",
+      "baseTokens": "Base Tokens",
+      "semanticTokens": "Semantic Tokens",
+      "componentTokens": "Component Tokens",
+      "stagingTesting": "Staging Testing"
+    },
+    "fields": {
+      "components": {
+        "name": "Components",
+        "figma": "Figma",
+        "commit": "Commit",
+        "staging": "Staging Storybook",
+        "production": "Production Storybook",
+        "astro": "Astro Link",
+        "status": "Development",
+        "stagingTests": "[Staging] Test Records"
+      },
+      "stagingTesting": {
+        "case": "Component/Sub Component",
+        "result": "Testing Results",
+        "expected": "Expected Results",
+        "screenshot": "Attachment",
+        "suggestion": "Suggestion for Improvement",
+        "component": "Composed In"
+      },
+      "tokens": {
+        "baseName": "Primitives",
+        "semanticName": "Tokens",
+        "value": "Value",
+        "parity": "Parity Status",
+        "componentTokenParity": "Testing Status"
+      }
+    },
+    "choices": {
+      "$comment": "Cell VALUES, not column names — left exactly as the base spells them today. The Development formula matches these literally. Parity Status is inconsistent between the token tables (Base Tokens: 'In Testing', Semantic Tokens: 'In testing') and still needs a decision.",
+      "result": ["Passed", "Failed", "Fixed (To re-test)"],
+      "parity": ["Passed", "Failed", "In Testing"]
+    }
+  },
+  "asana": {
+    "workspaceId": "0000000000000000",
+    "projectId": "0000000000000000",
+    "agents": { "engineer": "", "qa": "", "devops": "", "pm": "" }
+  },
+  "figma": {
+    "$note": "Only tokens is required. One Figma file? set tokens, leave components blank. Components are read per-row from Airtable, so add component files only if you want them named here.",
+    "files": {
+      "tokens": "",
+      "components": ""
+    }
+  },
+  "stack": {
+    "$note": "Set at /productive-crew:setup. Decides the component code AND the token output. Regenerates tools.md.",
+    "framework": "react",
+    "language": "typescript"
+  },
+  "tokens": {
+    "buildTool": "style-dictionary",
+    "platforms": ["css", "js"]
+  },
+  "repo": {
+    "$note": "Branch names are yours. Defaults below. If your repo already uses develop/master or another flow, /productive-crew:setup detects it and maps the three tiers (work → preview → production) to your branches. If you rename these, also update the branch refs in .github/workflows/pages.yml.",
+    "slug": "owner/your-design-system",
+    "componentPrefix": "component/",
+    "stagingBranch": "staging",
+    "mainBranch": "main",
+    "stagingUrl": "https://owner.github.io/your-design-system/staging/",
+    "productionUrl": "https://owner.github.io/your-design-system/"
+  },
+  "tokenAudit": { "schedule": "weekly" },
+  "pm": { "schedule": "daily" },
+  "deploy": {
+    "$note": "true = full pipeline (DevOps + CI deploy to Pages, QA tests the live staging URL). false = no DevOps, no CI; QA tests the local Storybook and the lifecycle ends at Passed.",
+    "enabled": true
+  }
+}
