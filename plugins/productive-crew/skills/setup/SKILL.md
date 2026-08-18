@@ -21,7 +21,8 @@ repo already answers.
 | existing token pipeline | `style-dictionary` (or other) in deps · a tokens config · a `tokens/` dir · raw CSS vars | `tokens.platforms`, `tokens.buildTool` — **adopt vs scaffold** |
 | component location | scan for a components dir (`src/components`, `lib`, `packages/*`, …) | informational — don't impose a path |
 | branch flow · default branch | `git branch -a`, default branch | `repo.mainBranch`, `repo.stagingBranch` |
-| existing CI / deploy | `.github/workflows/*` | `deploy.enabled` hint — **don't clobber** |
+| existing CI / deploy | `.github/workflows/*` | reuse it — **don't clobber** |
+| somewhere to deploy | `git remote -v` · an existing host CLI or config | `deploy.enabled` — a remote means yes |
 
 Show what you found, then run the interview against it:
 
@@ -54,17 +55,29 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
 4. **Airtable** — new base? (yes → build it; no → paste an existing `baseId`).
 5. **Asana** — new project? (yes → build it; no → paste `projectId`).
 6. **token-builder schedule** — daily / weekly / manual → `tokenBuilder.schedule`.
-7. **Deployment?** — DevOps agent + Pages CI?
-   - *Existing deploy found* → default to reusing it; confirm before adding ours.
-   - **No** → `deploy.enabled: false`; skip DevOps, `pages.yml`, `/productive-crew:deploy`. Say what
-     this costs, plainly: **no staging link means no QA stage and no test records** — the lifecycle
-     stops after the Engineer's own checks. It is a starting state, not a destination. Default to
-     **yes** whenever the repo has a remote; only take no when it genuinely has nowhere to deploy.
-   - **Yes** → keep the full pipeline. Then ask **who publishes**:
-     `deploy.provider: github-pages` (the bundled workflow) or `command` (you run a deploy command).
-     Choose `command` whenever GitHub Actions isn't usable — a locked or restricted account, an org
-     policy, or a host they already have. Write the command into `deploy.stagingCommand`, and tell
-     them the one rule: **it must print the deployed URL as its last line of stdout.**
+7. **Deployment** — `deploy.enabled` stays **true**. This is a detect-and-confirm, not an open
+   question: without a staging build there is no QA stage and no test records, so turning it off
+   removes half the crew. Follow §0's rule — confirm what you found in one line, don't ask cold.
+
+   - **A remote exists** (the normal case) → confirm: *"Deploying from `<remote>` — right?"* Done.
+   - **An existing deploy workflow was found** → reuse it. Don't add `pages.yml` alongside.
+   - **No remote yet** → say so and offer the two ways forward, rather than reaching for `false`:
+     add a remote now, or publish with a command (below). `false` is the answer only when the
+     project genuinely has nowhere to deploy *and* the user declines both.
+
+   Then settle **who publishes** → `deploy.provider`:
+
+   | provider | when |
+   |---|---|
+   | `github-pages` | GitHub Actions works for them. The bundled `pages.yml` handles it. |
+   | `command` | Actions is unavailable — a locked or restricted account, an org policy — or they already have a host. Write the deploy command into `deploy.stagingCommand`. |
+
+   For `command`, tell them the one rule: **it must print the deployed URL as its last line of
+   stdout.** Have them run it once by hand and check that, before it becomes load-bearing.
+
+   Only if they insist on **no deployment**: set `deploy.enabled: false` and say plainly what it
+   costs — no staging link, no QA stage, no test records, the lifecycle stops after the Engineer's
+   own checks. Record it as a starting state to revisit, not a decision.
 8. **Astro docs?** — yes / no (enables doc-generator).
 9. **Orchestrator name** (you) → `governance/registry.md`.
 
