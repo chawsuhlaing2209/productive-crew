@@ -1,12 +1,12 @@
 ---
 name: finding-format
-description: The one format for a QA finding, written to the Airtable Expected Result column and the Asana comment. Reference this whenever you log an issue.
+description: The one format for a QA finding, written to the Airtable Expected Results column and the Asana comment. Reference this whenever you log an issue.
 user-invocable: false
 ---
 
 # Finding format
 
-Same block in the Airtable *Expected Result* column and the Asana comment.
+Same block in the Airtable *Expected Results* column and the Asana comment.
 **Never a raw value. Name the token or prop.**
 
 ```

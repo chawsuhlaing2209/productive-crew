@@ -31,7 +31,7 @@ new Asana project for you**, and writes your `.env` + `productive.config.json`. 
 | 8 | Orchestrator name (you) | for the registry |
 
 **What it creates in Airtable** (the new base): `Components`, `Base Tokens`, `Semantic Tokens`,
-`Staging Testing`, `Production Testing` — with the derived **Development** formula wired up
+`Staging Testing` — with the derived **Development** formula wired up
 (*nobody sets status by hand*).
 
 **What it creates in Asana** (the new project): one task per component + lifecycle subtasks

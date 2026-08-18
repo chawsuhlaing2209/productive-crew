@@ -78,15 +78,22 @@ No component is built until tokens are audited and delivered — same gate eithe
 
 New base named after the design system, tables:
 
-- **Components** — Name · Figma · Staging Storybook · Production Storybook · Staging URL ·
-  Production URL · Total Tests · Passed Tests · Testing Results · **Development** (formula) · Synchronization %
-- **Base Tokens** — Name · Value · Parity Status
-- **Semantic Tokens** — Name · References · Value · Parity Status
-- **Staging Testing** — one row per variant/state/prop · Result · Expected Result · Screenshot · Composed in (→ Components)
-- **Production Testing** — same shape.
+Every table and column name is **Title Case**.
 
-Wire **Development** as a *derived* formula (Figma link → To-do; staging link → Ready for testing;
-all Passed → To be deployed; … → Completed). Never make Development writable. Write the ids into `productive.config.json`.
+- **Components** — Components (primary) · Category · Figma · Commit · Staging Storybook ·
+  Production Storybook · Astro Link · [Staging] Test Records (→ Staging Testing) ·
+  Total Staging Tests · Staging Passed Count · Staging Testing Results Summary ·
+  **Development** (formula) · Synchronization %
+- **Base Tokens** — Primitives · Value · Parity Status
+- **Semantic Tokens** — Tokens (formula) · ☀️ Value (→ Base Tokens) · Parity Status
+- **Staging Testing** — one row per variant/state/prop · Testing Results · Expected Results ·
+  Attachment · Suggestion for Improvement · Composed In (→ Components)
+
+There is **no Production Testing table** — testing is staging-only.
+
+Wire **Development** as a *derived* formula (Figma → To-do; commit → To be staged; staging link →
+Ready for Testing; a Failed case → To be fixed; all Passed → To be deployed; production Storybook →
+Completed). Never make Development writable. Write the ids into `productive.config.json`.
 
 > On an **existing repo**, leave the Components table empty — the crew registers a component the
 > first time it works on it. Setup creates the structure, not a census of what's already there.

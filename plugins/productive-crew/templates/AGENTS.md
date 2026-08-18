@@ -58,7 +58,7 @@ a blocker is a card too — what broke + one thing to try.
 | 🎨 token-audit | Figma → tokens.json + Style Dictionary build (no Airtable) | Senior |
 | 🔁 token-parity | Figma ↔ code token parity → Parity Status | Autonomous |
 | 🔨 Engineer | Figma → code + vitest → PR to staging | Junior |
-| 🔍 QA | test staging then production → findings + verdict | Senior |
+| 🔍 QA | test staging → findings + verdict | Senior |
 | 🚀 DevOps | staging → main → production deploy | Junior (prod gated) |
 | 🧭 PM | verify records + links · sync Asana (daily) | Autonomous |
 | 📄 doc-generator | docs/ | Senior (optional) |
@@ -69,9 +69,8 @@ ship with the plugin; install or update it to change them.
 ## The loop
 
 ```
-To-do → 🔨 build + vitest → CI deploys staging → 🔍 QA staging → 🚀 deploy
-     → 🔍 QA production (TIP) → 🚀 redeploy → ✅ Completed
-        ↕ fix loops (Engineer ↔ QA) at each test stage
+To-do → 🔨 build + vitest → CI deploys staging → 🔍 QA staging → 🚀 deploy → ✅ Completed
+        ↕ fix loop (Engineer ↔ QA) at the test stage
 ```
 
 A human approves before production. Deploy is CI (GitHub Actions + Pages), never an agent acting alone.
@@ -94,8 +93,11 @@ required checks) makes the rule real, not just written. Full rule: `rules/git.md
 
 ## Status ladder (Airtable formula derives each)
 
-`To-do → Ready for testing → To be fixed / To be deployed → Fixing / Fixed →
-Ready for TIP → To be TIP fixed / To be re-deployed → TIP Fixing / TIP Fixed → Completed`
+`To-do → To be staged → Ready for Testing → To be fixed / Fixing / Fixed →
+To be deployed → Completed`
+
+Testing happens on staging only — there is no production-testing (TIP) loop. `Completed` means the
+production Storybook is deployed.
 
 ## Stack (summary — full detail in the productive-crew plugin (rules/stack.md))
 

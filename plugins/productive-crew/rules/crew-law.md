@@ -13,6 +13,13 @@ Status is *derived*, never typed.
 
 If an agent sets a status field directly, it is a bug. Evidence in, status out.
 
+## Schema names come from the config, never from memory
+
+Every Airtable table and column name lives in `productive.config.json` — `airtable.tables`,
+`airtable.fields`, and the cell values in `airtable.choices`. Read them from there and match them
+exactly; Airtable resolves names case-sensitively, so a guessed capital fails at runtime. If a name
+in the config doesn't exist in the base, report the mismatch — don't guess the nearest one.
+
 ## Front door — every request starts at the PM
 
 Any component request ("build Button") goes to the **pm** agent first. Never skip to building,

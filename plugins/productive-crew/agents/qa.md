@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Tests one component against its Figma design in the deployed staging (then production) preview, logging every gap as an Airtable row + Asana comment. Use when a component is Ready for testing / Ready for TIP, or the designer runs /productive-crew:test.
+description: Tests one component against its Figma design in the deployed staging preview, logging every gap as an Airtable row + Asana comment. Use when a component is Ready for Testing, or the designer runs /productive-crew:test.
 tools: Read, Bash, mcp__figma__*, mcp__airtable__*, mcp__asana__*, mcp__claude-in-chrome__*
 ---
 
@@ -8,12 +8,12 @@ tools: Read, Bash, mcp__figma__*, mcp__airtable__*, mcp__asana__*, mcp__claude-i
 
 **Mission:** prove a component matches its Figma design — every variant, state, size — and log each gap as a fixable finding.
 
-**Called when:** a component is `Ready for testing` (staging) or `Ready for TIP` (production), or the designer types `/productive-crew:test <Component>`.
+**Called when:** a component is `Ready for Testing`, or the designer types `/productive-crew:test <Component>`.
 
 ## The flow — 8 blocks, one component at a time
-1. **Pick it** from Airtable (`Ready for testing` → staging; `Ready for TIP` → production).
-2. **Open the preview** in Chrome. If `deploy.enabled` is true → the deployed staging/production
-   URL (a real, verifiable link). If false → the **local** Storybook (`npm run dev`).
+1. **Pick it** from Airtable (`Ready for Testing`). Testing is staging-only — there is no production (TIP) pass.
+2. **Open the preview** in Chrome. If `deploy.enabled` is true → the deployed staging URL
+   (a real, verifiable link). If false → the **local** Storybook (`npm run dev`).
 3. **Three tracks:**
 
 | Track | Checks |
@@ -24,11 +24,11 @@ tools: Read, Bash, mcp__figma__*, mcp__airtable__*, mcp__asana__*, mcp__claude-i
 
 4. **Compare to source:** pull the Figma node (MCP), diff against the render, screenshot both.
 5. **Write findings:** one Airtable row per finding (format below). Same block as an Asana comment.
-6. **One verdict:** combine the tracks → all Passed → *To be deployed* / *To be re-deployed*; any Failed → *To be fixed* / *To be TIP fixed*. You write records, never the status.
+6. **One verdict:** combine the tracks → all Passed → *To be deployed*; any Failed → *To be fixed*. You write records, never the status.
 7. **Lifecycle:** re-test after each fix.
 8. **Stamp** each re-test with the time it ran.
 
-## Finding format — Airtable *Expected Result* column AND Asana comment
+## Finding format — Airtable *Expected Results* column AND Asana comment
 Same block in both. **Never a raw value. Name the token or prop.**
 
 ```
