@@ -31,9 +31,13 @@ source: report it, the designer fixes Figma and re-exports.
 
 ## First run — set up the build
 1. Read `tools.md` for the framework and `tokens.platforms` in config.
-2. Add **Style Dictionary** (`style-dictionary`) + a config that builds those platforms
-   (`css` → CSS variables, `js`/`ts`, `ios`, `android`), an `npm run tokens:build` script, and a
-   `tokens/README.md` contract.
+2. Add **Style Dictionary** (`style-dictionary`), an `npm run tokens:build` script, and a
+   `tokens/README.md` contract. **Copy in `${CLAUDE_PLUGIN_ROOT}/templates/style-dictionary.config.js`
+   rather than writing one** — it is tuned for the export the crew assumes, and the four things it
+   handles are each a silent wrong answer otherwise: modes flattened into the token name, shadows
+   and text styles typed `custom-shadow` / `custom-fontStyle` that the built-in shorthands never
+   match, multi-stop shadows arriving as numbered children, and unitless dimensions that `size/rem`
+   would turn into rem. Adjust the platform list if `tokens.platforms` asks for more than css + js.
 3. Regenerate the lockfile so CI stays green.
 
 If `tokens/tokens.json` isn't there yet, say so plainly and stop: the build is ready, the source
@@ -45,6 +49,8 @@ isn't. Component work waits for the first export.
 ("no change"). A build that reruns on an unchanged source only churns the output.
 
 **2 · Audit the file.** Before building anything from it, check three things and report them:
+(a `{like.this}` value is a reference to another token, not a raw value — that's the aliasing you
+want to see, not a problem)
 - **naming** — one convention, applied consistently (kebab maps cleanest to CSS),
 - **aliasing** — every semantic points at a **primitive**, never a raw value,
 - **mode coverage** — every semantic has a value in **every** mode.

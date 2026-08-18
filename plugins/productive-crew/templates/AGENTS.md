@@ -68,11 +68,12 @@ ship with the plugin; install or update it to change them.
 ## The loop
 
 ```
-To-do → 🔨 build + vitest → CI deploys staging → 🔍 QA staging → 🚀 deploy → ✅ Completed
+To-do → 🔨 build + vitest → staging published → 🔍 QA staging → 🚀 deploy → ✅ Completed
         ↕ fix loop (Engineer ↔ QA) at the test stage
 ```
 
-A human approves before production. Deploy is CI (GitHub Actions + Pages), never an agent acting alone.
+A human approves before production. Publishing is CI or a deploy command — see `deploy.provider`
+below — never an agent inventing a URL.
 
 ## Git — three tiers
 

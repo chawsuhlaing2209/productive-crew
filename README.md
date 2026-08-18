@@ -58,14 +58,38 @@ connection only reports the variables that are **actually used** somewhere in th
 defined but haven't applied yet would silently go missing. So the tokens come from a proper export
 instead.
 
-1. In your Figma file, run a plugin that **exports variables to JSON** — Tokens Studio and several
-   free "variables to JSON" plugins do this.
-2. Save the result in your repo as **`tokens/tokens.json`**. That exact name and place — everything
-   downstream looks for it there.
-3. Commit it.
+The crew is set up for the free Figma plugin
+**[Design Tokens](https://www.figma.com/community/plugin/888356646278934516/design-tokens)**
+by Lukas Oppermann.
 
-That's it. From then on, whenever your variables change, re-export to the same file and the crew
-rebuilds from it. You can also automate this later so it lands in the repo by itself.
+1. Install it in Figma and run it on your design system file.
+2. Export your tokens as **a single JSON file**, including both your **variables** and your
+   **styles** — the styles are where your text and shadow definitions live, and you want them too.
+3. Save it in your repo as **`tokens/tokens.json`**. That exact name and place — everything
+   downstream looks for it there.
+4. Commit it.
+
+From then on, whenever your variables change, re-export over the same file and run
+`/productive-crew:tokens`. You can automate this later so it lands in the repo by itself.
+
+**You don't have to configure anything for this.** Setup installs a build config already tuned for
+that plugin's output — themes, shadows, text styles, and spacing all come out correct. If you export
+from something else instead, that config is where you'd adapt it, and it explains what it's doing.
+
+<details>
+<summary>What it handles for you, if you're curious</summary>
+
+Four things about this export would silently produce the wrong result with a default setup:
+
+- **A variable with several modes** exports as one token per mode, with the mode baked into the
+  name. Left alone you'd get `--color-day-surface-page` and `--color-night-surface-page` as separate
+  variables instead of one name that changes value per theme.
+- **Shadows and text styles** come through with non-standard type names, so the usual handling never
+  fires and they render as `[object Object]`.
+- **Multi-stop shadows** arrive as separate numbered pieces rather than one shadow.
+- **Spacing values** arrive as plain numbers, and the usual handling reads `4` as `4rem` — 64px.
+
+</details>
 
 > **Don't hand-edit `tokens/tokens.json`.** It's a copy of what's in Figma. Change it in Figma and
 > re-export, or your next export will quietly wipe your edit.

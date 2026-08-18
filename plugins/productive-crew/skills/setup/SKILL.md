@@ -164,6 +164,7 @@ repo doesn't already have, one at a time, saying what you're adding:
 | `templates/CLAUDE.md` | repo root | a `CLAUDE.md` exists — add the `@AGENTS.md` import if absent |
 | `templates/governance/` | repo root | a `governance/` exists |
 | `templates/tokens/` | repo root | any token pipeline was detected in §0 |
+| `templates/style-dictionary.config.js` | repo root | a Style Dictionary config already exists |
 | `templates/.storybook/`, `templates/vitest.config.ts` | repo root | Storybook / vitest already configured |
 | `templates/.github/workflows/pages.yml` | repo root | `deploy.enabled` is false, or a deploy workflow exists |
 | `templates/examples/Button/` | wherever components live | always optional — offer, don't impose |
