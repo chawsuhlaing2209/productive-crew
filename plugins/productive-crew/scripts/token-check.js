@@ -36,12 +36,15 @@ const toCssVar = (dotPath) =>
   '--' + dotPath.split('.').join('-').replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 // Every `--name:` per selector block, so theme blocks can be compared to :root.
-function parseCss(css) {
+function parseCss(rawCss) {
+  // Style Dictionary emits a "do not edit" comment above :root; without stripping comments
+  // first they get swallowed into the selector and no block matches.
+  const css = rawCss.replace(/\/\*[\s\S]*?\*\//g, '');
   const blocks = {};
   const re = /([^{}]+)\{([^}]*)\}/g;
   let m;
   while ((m = re.exec(css))) {
-    const selector = m[1].trim();
+    const selector = m[1].trim().replace(/\s+/g, ' ');
     const names = [...m[2].matchAll(/(--[\w-]+)\s*:/g)].map((x) => x[1]);
     if (!names.length) continue;
     blocks[selector] = new Set([...(blocks[selector] ?? []), ...names]);
