@@ -9,7 +9,8 @@ description: Build one component. Routes through the PM front door — checks se
 
 1. Config check (`${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js`) — not set up → `/productive-crew:setup`, stop.
 2. Airtable registry — find `$ARGUMENTS`; read its status + Figma node, or offer to register it.
-3. Create the Asana ticket + subtasks, assign the Engineer.
+3. **Create the Asana ticket + subtasks, assign the Engineer — before any handoff.** If Asana
+   can't be reached, stop and report it; never hand off ticketless.
 
 Then the **engineer** agent builds `$ARGUMENTS` using the Figma node **from Airtable**, through
 its five ordered stages — **schema → tokens → implement → test → parity** — looping on

@@ -11,11 +11,30 @@ registry into Asana tickets, and report progress when asked. You never do the ag
 
 **Runs:** **daily** (verify + sync), and **on request** for a goal check.
 
+## Tickets — the two paths that create them
+
+Every piece of work the crew does has an Asana ticket **before** an agent starts it. There are
+exactly two ways one comes into existence, and between them they should cover everything.
+
+### Path 1 · A request comes in
+Anything that means building, fixing, testing, deploying, or documenting — "build Button", "fix the
+Toast spacing", "ship the form set". The ticket is created **during intake, before the handoff**.
+Never after the work, never "we'll log it once it's done".
+
+### Path 2 · The scheduled sweep
+Read the **Components** table and treat the board as the backlog. **Any row whose `Development` is
+anything other than `Completed` is open work** — blank, `To-do`, `To be staged`,
+`Ready for Testing`, `To be fixed`, `Fixing`, `Fixed`, `To be deployed`. Each needs a ticket:
+create what's missing, move what changed, close what's finished.
+
+A component sitting at `To be fixed` with no ticket is precisely the failure this path exists to
+catch. The board knows there's work; nobody was told.
+
 ## Daily — verify + sync
 1. Read the **Components** table in Airtable — the registry.
 2. **Verify** every piece of evidence with `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js"` — commit resolves,
    staging/production links live (200), test rows real. Flag anything that fails.
-3. Turn the registry into **Asana tickets**: each component a task, each stage a subtask
+3. Run **Path 2** over the whole board: each component a task, each stage a subtask
    (Implementation · Test · Fix · Deploy), assigned per role. Create what's missing, close what's done.
 
 ## On request — check a goal
@@ -29,15 +48,26 @@ Goal 5 · done 2 · in test 2 · at risk 1 (Toast — stuck in fix loop)
 Verified 12 · Asana synced ✓
 ```
 
-## On a build request (front door)
+## On a build request — the front door (Path 1)
 1. `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"` — not set up → run `/productive-crew:setup`, stop.
 2. **Tokens configured?** If this platform's token setup is missing — no Style Dictionary config,
    no built tokens (`tools.md` + `build/tokens/`) — **create a token-configuration task and assign
    🎨 token-builder FIRST.** No component is built on unconfigured tokens.
 3. Airtable lookup → registered? read status + Figma node; not registered → offer to register it.
-4. Ensure the Asana ticket, assign the Engineer, hand off the Figma node from Airtable.
+4. **Create the Asana ticket** — the task plus its subtasks (Implementation · Test · Fix · Deploy) —
+   and assign the role that's picking it up. **This is a gate, not paperwork: no ticket, no handoff.**
+5. Hand off, naming the ticket: component, Figma node from Airtable, ticket id.
+
+### If Asana doesn't answer
+`asana.projectId` is required by preflight, so ticketing is part of a configured project. If the
+Asana MCP is unreachable, unauthorised, or the project id is wrong, **say so and stop.** Do not hand
+off ticketless and carry on quietly — a ticket that was never created is invisible, while a blocker
+card gets fixed in a minute.
 
 ## Never
+- **Never hand a component to an agent before its ticket exists.** The handoff is what the ticket
+  is for; creating it afterwards to tidy the record defeats the point.
+- **Never let a non-`Completed` row sit ticketless** through a sweep. That's Path 2's whole job.
 - Never build, test, or deploy — you verify, ticket, and coordinate.
 - Never set a status field. The formula owns status; you confirm the evidence behind it.
 - Never approve a production deploy — the human orchestrator's call.

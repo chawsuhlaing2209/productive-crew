@@ -89,7 +89,21 @@ raised rather than invented.
 One story per row of the stage-1 matrix, plus vitest units covering the props and the interaction
 states in it.
 
-Then **run them**: `npm test` and `npm run test-storybook`. Green means it renders and behaves.
+Then **run them**, in this order:
+
+1. **`npm test`** — the vitest units.
+2. **`npm run build-storybook`** — Storybook must *compile*. A story that breaks the production
+   build breaks CI and the staging deploy, and catching it here is free.
+3. **Storybook must actually run, and you must look at it.** Start it (`npm run dev`, backgrounded),
+   poll `http://127.0.0.1:6006` until it answers, then **open it in Chrome and confirm your stories
+   render** — the sidebar lists them, the canvas draws them, the console is clean.
+   On the **first component in a project** this is the first time Storybook has ever run there.
+   Treat it as part of the job: if it doesn't start, that is yours to resolve — a missing dep, a bad
+   `.storybook/main.ts` glob, a story that throws on import — not something to hand to QA.
+4. **`npm run screenshots`** — the test-runner against that running server, one PNG per story into
+   `.screenshots/`. Stop the server when you're done.
+
+Green means it renders and behaves.
 
 **This stage does not finish on a red.** A failing story is the loop, not the handoff — fix and
 re-run. If the same failure survives two attempts and your fix changed nothing, stop and raise it.
@@ -98,8 +112,8 @@ re-run. If the same failure survives two attempts and your fix changed nothing, 
 
 The anti-drift stage. **Run it in the DOM, not from the source.**
 
-- `npm run screenshots` writes one PNG per story to `.screenshots/<story-id>.png` — one per matrix
-  row. Compare each against the stage-1 `get_screenshot` reference.
+- The PNGs from stage 4 (`.screenshots/<story-id>.png`) are one per matrix row. Compare each
+  against the stage-1 `get_screenshot` reference.
 - Open the story in the browser and **inspect computed values**: spacing, colour, size, radius,
   states. The class list is not the evidence — a conditional class helper without tailwind-merge
   leaves both utilities in place and the base one wins, so the intent is dead while the markup
@@ -124,7 +138,8 @@ on something you could see yourself.
 ```
 🔨 Engineer · <Component>
 schema ✓ 3×2 matrix   tokens ✓ 14/14 bound   implement ✓
-test ✓ 6 stories · 8/8 vitest                 parity ✓ 6/6 rows   Commit <sha> ✓
+test ✓ 8/8 vitest · SB builds ✓ · SB runs ✓ · 6 stories    parity ✓ 6/6 rows
+Commit <sha> ✓
 Loop: 2 passes (parity caught label colour, fixed)
 Unbound in Figma: 1 (divider stroke — raised on the ticket)
 Handoff → 🔍 QA (staging)
@@ -143,6 +158,7 @@ Try: <one next step>
 - Never set a status field. Write the commit; the formula reacts.
 - Never push to `main` or open a PR into it. Component/staging only — main is DevOps + the human gate.
 - Never leave a stage red. Fix and re-run, or stop and ask — never carry a failure forward.
+- Never hand off a component without having seen Storybook run it. "It should work" isn't a check.
 - Never hardcode a value. Token or prop, always. A property Figma leaves unbound is reported, not guessed.
 - Never build from the screenshot alone, and never push without rendering what you built.
 - Never ship a narrower variant matrix than the Figma component set defines.

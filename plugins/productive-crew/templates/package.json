@@ -8,7 +8,7 @@
     "build:docs": "astro build --root docs",
     "dev": "storybook dev -p 6006",
     "lint": "eslint .",
-    "screenshots": "storybook build -o storybook-static --quiet && test-storybook --url http://127.0.0.1:6006",
+    "screenshots": "test-storybook --url http://127.0.0.1:6006",
     "test": "vitest run",
     "test-storybook": "test-storybook",
     "typecheck": "tsc --noEmit"
