@@ -137,6 +137,7 @@ is raised as a finding. Fix and re-run until clean.
    |---|---|
    | `github-pages` | CI publishes on push. Wait for the run, then take the URL from `repo.stagingUrl`. |
    | `command` | Run `deploy.stagingCommand` yourself. Its **last line of stdout is the URL.** |
+   | *absent* | Treat as `github-pages`. A config written before the key existed is not a misconfiguration. |
 
    Either way, **prove it**: the URL answers **200** and shows *your* component's stories, not the
    last build's. A deploy that hasn't finished is not evidence — wait for it, or report that you're
