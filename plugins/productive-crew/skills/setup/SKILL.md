@@ -72,8 +72,28 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
    | `github-pages` | GitHub Actions works for them. The bundled `pages.yml` handles it. |
    | `command` | Actions is unavailable — a locked or restricted account, an org policy — or they already have a host. Write the deploy command into `deploy.stagingCommand`. |
 
-   For `command`, tell them the one rule: **it must print the deployed URL as its last line of
-   stdout.** Have them run it once by hand and check that, before it becomes load-bearing.
+   **Ask by host, not by config value.** "Where do you want the staging Storybook to live?" — then
+   translate. `provider` only ever takes `github-pages` or `command`; a host name is never a valid
+   value. If they say Vercel, that is `command` plus a Vercel command.
+
+   Starting points, to confirm with them rather than paste blindly — CLIs change, and only they know
+   their project/account setup:
+
+   | They say | `provider` | `stagingCommand` (confirm, then write) | First-time auth |
+   |---|---|---|---|
+   | GitHub Pages | `github-pages` | — the bundled workflow handles it | Settings → Pages → Source = GitHub Actions |
+   | Vercel | `command` | `npm run build-storybook && npx vercel deploy storybook-static --yes` | `vercel login` once |
+   | Netlify | `command` | `npm run build-storybook && npx netlify deploy --dir storybook-static` | `netlify login` once |
+   | Cloudflare Pages | `command` | `npm run build-storybook && npx wrangler pages deploy storybook-static` | `wrangler login` once |
+   | Something else | `command` | ask them for it | ask them |
+
+   The production command is the same with that host's promote flag — `--prod` for Vercel and
+   Netlify, `--branch main` for Cloudflare.
+
+   Then tell them the one rule that makes any of these work: **the command must print the deployed
+   URL as its last line of stdout.** Have them run it once by hand and check that, before it becomes
+   load-bearing. If the CLI prints a summary block after the URL, wrap it — `… | tail -1` won't do
+   it, they need a command whose final output is the bare URL.
 
    Only if they insist on **no deployment**: set `deploy.enabled: false` and say plainly what it
    costs — no staging link, no QA stage, no test records, the lifecycle stops after the Engineer's

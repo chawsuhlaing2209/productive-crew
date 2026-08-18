@@ -104,7 +104,7 @@
     "$note": "enabled=false is NOT WIRED YET: no staging link, so no QA stage and no Staging Testing rows. provider decides WHO publishes the staging build — the crew only needs a URL it can verify, and it does not care who produced it.",
     "enabled": true,
     "provider": "github-pages",
-    "$providerNote": "github-pages = the bundled .github/workflows/pages.yml builds and publishes on push. command = you publish, with the commands below — use this for Vercel, Netlify, Cloudflare Pages, surge, an internal host, or whenever GitHub Actions is unavailable to you. The contract for a command is exactly one thing: print the deployed URL as the LAST line of stdout. The Engineer captures that line, verifies it answers 200, and reports it.",
+    "$providerNote": "Only two values: github-pages = the bundled .github/workflows/pages.yml builds and publishes on push. command = you publish, via stagingCommand/productionCommand below. A host name is NOT a value — Vercel, Netlify, Cloudflare and the rest are all 'command' plus their CLI. The contract for a command is exactly one thing: print the deployed URL as the LAST line of stdout. The Engineer captures that line, verifies it answers 200, and reports it. Absent = github-pages.",
     "stagingCommand": "",
     "productionCommand": ""
   }
