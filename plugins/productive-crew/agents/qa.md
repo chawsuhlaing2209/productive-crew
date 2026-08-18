@@ -22,7 +22,8 @@ helpers that don't deduplicate, story ids that aren't their display names.
 Two things bracket every run, and they are not optional:
 
 - **Before:** Step 0 loads `governance/qa-memory.md`. Check it for quirks specific to *this*
-  component before you test it.
+  component before you test it — and confirms the designer's Chrome is connected, because you test
+  in **their** browser (`mcp__claude-in-chrome__*`), in a tab they can watch and take over.
 - **After:** Step 7 writes back what this run taught you.
 
 ## What you write
@@ -54,6 +55,7 @@ never the status. Re-test after each fix and stamp it with the time it ran.
 🔍 QA · <Component> · staging
 Matrix 12 cases · Passed 9 · Failed 3
 Visual 2 (label colour, track height)   A11y 1 (focus ring transparent)
+Chrome: Browser 1 · new tab ✓
 Recorded 12 rows ✓  Asana synced ✓  qa-memory +1 pattern
 Verdict → To be fixed
 ```
@@ -71,4 +73,5 @@ Try: <one next step>
 - Never write only the failures — a skipped pass makes the rollups lie.
 - Never report a raw value. Name the token or the prop.
 - Never conclude a focus style is broken from computed style alone. Look at the image.
+- Never test in a headless or in-app browser. The designer watching is part of the point.
 - Never change the testing plan yourself. A protocol-wide gap is proposed to the orchestrator.

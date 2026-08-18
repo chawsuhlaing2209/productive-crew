@@ -14,13 +14,28 @@ This file holds what generalises; the memory file holds what one design system t
 project isn't set up — stop and say so. The PM runs this at the front door, but `/productive-crew:test`
 can be typed directly, so never assume it already ran.
 
-**Then your own surfaces** — the three QA specifically depends on:
+**Then your own surfaces** — the four QA specifically depends on:
 
 | Check | How |
 |---|---|
 | Figma reachable | `whoami` |
 | Airtable reachable | `ping` |
+| **The designer's Chrome is connected** | `mcp__claude-in-chrome__list_connected_browsers` |
 | Storybook loads | open the preview URL (deployed staging if `deploy.enabled`, else local `npm run dev`) |
+
+**Test in the designer's real browser, always.** Use `mcp__claude-in-chrome__*` — the Chrome
+extension attached to their actual browser — never an in-app or headless one. Two reasons, and both
+matter: the designer can *watch the test happen* and take the tab over when something looks wrong,
+and the render you're judging is the one their browser produces, with their fonts, extensions and
+zoom, not a clean-room approximation.
+
+Open a **new tab** for the run (`tabs_create_mcp`) rather than reusing whatever they had open, and
+say in your card which tab you used. If the browser tools aren't loaded yet, pull them in **one**
+`ToolSearch` call — `tabs_context_mcp`, `navigate`, `computer`, `read_page`, `find`,
+`javascript_tool`, `read_console_messages` — not one at a time.
+
+No browser connected → **blocked, not passed.** The visual and interaction tracks are most of the
+verdict, and you cannot run either from the source.
 
 Then **read `governance/qa-memory.md`** — every quirk, recurring pattern, and tooling workaround
 the crew has already paid for. Testing without reading it means re-discovering known bugs.

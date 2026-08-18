@@ -95,8 +95,8 @@ Then **run them**, in this order:
 2. **`npm run build-storybook`** — Storybook must *compile*. A story that breaks the production
    build breaks CI and the staging deploy, and catching it here is free.
 3. **Storybook must actually run, and you must look at it.** Start it (`npm run dev`, backgrounded),
-   poll `http://127.0.0.1:6006` until it answers, then **open it in Chrome and confirm your stories
-   render** — the sidebar lists them, the canvas draws them, the console is clean.
+   poll `http://127.0.0.1:6006` until it answers, then **open it in the designer's Chrome
+   (`mcp__claude-in-chrome__*`, a new tab) and confirm your stories render** — the sidebar lists them, the canvas draws them, the console is clean.
    On the **first component in a project** this is the first time Storybook has ever run there.
    Treat it as part of the job: if it doesn't start, that is yours to resolve — a missing dep, a bad
    `.storybook/main.ts` glob, a story that throws on import — not something to hand to QA.
