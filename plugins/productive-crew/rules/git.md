@@ -21,7 +21,13 @@ in `.github/workflows/pages.yml`.)
 ## The tiers
 - **`<componentPrefix><name>`** — one branch per component. The Engineer works here.
 - **the staging branch** — every PR lands here. Never open a PR to the production branch.
-- **the production branch** — accepts PRs from the staging branch **only**.
+- **the production branch** — accepts PRs from the staging branch **only**, opened by 🚀 DevOps
+  with explicit human approval.
+
+**Both branches exist from day one.** The production branch is not created later when the first
+component is ready — the deploy workflow builds both environments on every run, and a missing
+production branch means every deploy publishes a site with nothing at its root. Create it at setup,
+then let it advance only through DevOps PRs.
 
 ## The rules
 - **Every PR targets `staging`.** No exceptions.

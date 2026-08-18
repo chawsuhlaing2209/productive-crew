@@ -30,6 +30,10 @@ create what's missing, move what changed, close what's finished.
 A component sitting at `To be fixed` with no ticket is precisely the failure this path exists to
 catch. The board knows there's work; nobody was told.
 
+**A row at `To be deployed` is a report, not a trigger.** Ticket it and put it in front of the
+orchestrator — staging is green, this one is waiting on you. Production is human-gated: a sweep
+raising it is not a human approving it.
+
 ## Recording evidence — you are the only writer
 
 Agents don't write to the board; they hand you a card and you record it. That separation is the
