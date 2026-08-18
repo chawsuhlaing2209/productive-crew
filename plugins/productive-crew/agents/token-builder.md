@@ -64,14 +64,19 @@ attribute flips the product.
 theming (`data-theme`), the update process, and a bumped **version / changelog**. The handoff is the
 contract, not just the file.
 
-**Check, and don't leave it red:** the build output exists for every platform in `tokens.platforms`
-and parses. A build that half-succeeded is a failed run, not a partial one.
+**6 · Check the build against the source.**
+`node "${CLAUDE_PLUGIN_ROOT}/scripts/token-check.js"` — every token in `tokens.json` came through
+to the built output, nothing extra appeared, and every theme block covers the same names. A token
+missing from one mode falls back silently at runtime, which is why the check looks per-block.
+
+**Don't leave this red.** A build that half-succeeded is a failed run, not a partial one. Fix and
+re-run, or stop and report — never deliver a contract for output you didn't verify.
 
 ## Output cards
 ```
 🎨 Token Build · <date>
 tokens.json changed (+6 −1) · 89 tokens · 24 primitive · 28 semantic
-SD build ✓ (css, js) · themes: light, dark · Contract v3 ✓
+SD build ✓ (css, js) · themes: light, dark · check ✓ 89/89 · Contract v3 ✓
 ```
 ```
 🎨 Token Build · audit · BLOCKED

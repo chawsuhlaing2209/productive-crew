@@ -5,7 +5,7 @@ paths:
 
 # Token conventions
 
-> **Trust here:** token-parity is Autonomous, token-builder is Senior. See `governance/trust-levels.md`.
+> **Trust here:** token-builder is Senior. See `governance/trust-levels.md`.
 
 Two tiers:
 

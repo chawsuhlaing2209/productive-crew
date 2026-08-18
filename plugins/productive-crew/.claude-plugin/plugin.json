@@ -33,12 +33,6 @@
       "title": "Asana personal access token",
       "description": "Used to open and sync the component tickets. Leave blank to run the crew without ticketing.",
       "sensitive": true
-    },
-    "figma_token": {
-      "type": "string",
-      "title": "Figma personal access token",
-      "description": "Used by token-parity to read the COMPLETE variable set from your library via the REST variables endpoint. The Figma MCP can't do this — it only returns variables that are applied. Create one in Figma → Settings → Security → Personal access tokens, with the file_variables:read scope. Without it, parity reports blocked rather than passed.",
-      "sensitive": true
     }
   }
 }

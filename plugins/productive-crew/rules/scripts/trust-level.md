@@ -5,7 +5,7 @@ paths:
 
 # Trust — `scripts/`   (read-only, always)
 
-These are the deterministic verifiers — `verify`, `record`, `parity-check`, `preflight`. An agent
+These are the deterministic verifiers — `verify`, `record`, `token-check`, `preflight`. An agent
 must never edit the checks it is judged by. Read-only for every agent, like `governance/`.
 
 **Allowed**

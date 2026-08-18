@@ -59,9 +59,9 @@ Two gates before you write a line of code:
 - **The built tokens must be current.** Missing, or older than `tokens/tokens.json` — the export
   landed and nothing rebuilt — → stop and have 🎨 token-builder run. Never build a component on
   stale tokens.
-- **The token set must be verified complete**, not assumed. If token-parity is failing or hasn't
-  run since the last token change, that's a stop: the parity check is what makes "the token exists"
-  mean "the token is right".
+- **The build must be verified against its source**, not assumed. Run
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/token-check.js"` — it fails if the built output is missing a
+  token from `tokens.json` or a theme block is short one. Red → stop and have 🎨 token-builder run.
 
 **A property Figma leaves unbound** — a raw hex, a loose px — is a **design gap, not your call.**
 Don't hardcode it, don't substitute the nearest token. Raise it on the ticket in the finding format
@@ -105,9 +105,6 @@ The anti-drift stage. **Run it in the DOM, not from the source.**
   leaves both utilities in place and the base one wins, so the intent is dead while the markup
   looks right.
 - Drive what a screenshot can't show: hover, focus, keyboard.
-
-Not the same thing as 🔁 **token-parity**, which compares Figma tokens to the built token files.
-This stage compares the *rendered component* to its *Figma node*.
 
 **Check:** every matrix row matches its Figma node in spacing, states and colour, or the difference
 is raised as a finding. Fix and re-run until clean.

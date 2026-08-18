@@ -20,7 +20,7 @@ Named reviewers:
 
 | Area | Reviewer |
 |---|---|
-| Tokens (audit + parity) | [name] |
+| Tokens | [name] |
 | Components | [name] |
 | QA verdicts | [name] |
 | Deploys | [name] |
@@ -41,7 +41,6 @@ that produces changes. The agents type.*
 | Work type | Home | Agent |
 |---|---|---|
 | tokens.json changes · scheduled | token build | 🎨 token-builder |
-| On-demand check | parity | 🔁 token-parity |
 | PR (build) | component code | 🔨 Engineer |
 | Test + verdict | staging & production | 🔍 QA |
 | Deploy | staging→main→prod | 🚀 DevOps |
@@ -51,7 +50,7 @@ that produces changes. The agents type.*
 
 | Agent | Escalates to |
 |---|---|
-| token-builder / token-parity | Tokens reviewer |
+| token-builder | Tokens reviewer |
 | Engineer | Components reviewer |
 | QA | QA reviewer |
 | DevOps (prod) | Orchestrator (approval gate) |
@@ -84,8 +83,7 @@ Three artifacts, one cadence.
 
 | Agent | Level | Scope | Verifier | Kill switch |
 |---|---|---|---|---|
-| 🔁 token-parity | Autonomous | read-only — writes nothing | parity-check | `AGENTS_PAUSED` |
-| 🎨 token-builder | Senior | `tokens.json` (imported) → Style Dictionary build (no Airtable) | token-parity | `AGENTS_PAUSED` |
+| 🎨 token-builder | Senior | `tokens.json` (imported) → Style Dictionary build (no Airtable) | token-check | `AGENTS_PAUSED` |
 | 🔍 QA | Senior | Storybook-testing tables, Asana comments, verdict | test records + PM verify | `AGENTS_PAUSED` |
 | 🔨 Engineer | Junior | `src/components/`, commits, PR→staging | vitest + typecheck/lint + QA | `AGENTS_PAUSED` |
 | 🚀 DevOps | Junior · prod human-gated | git staging→main, Pages deploy | build CI + orchestrator approval | `AGENTS_PAUSED` |
@@ -96,11 +94,10 @@ The orchestrator (you) is not in the table — you own the table.
 
 ### Decision records (ADR) — starters
 
-- **token-parity → Autonomous.** Read-only — it writes nothing at all, and is its own
-  deterministic verifier. Nothing it does reaches code or production. Audited monthly.
 - **token-builder → Senior.** Rewrites the built token output, which cascades to every
-  component, so it is not autonomous — but token-parity guards that output, so merges are
-  skimmed, not read line by line. It never writes the imported `tokens.json`.
+  component, so it is not autonomous — but `token-check` verifies that output against the
+  imported source, so merges are skimmed, not read line by line. It never writes
+  `tokens.json` itself.
 - **QA → Senior.** Produces no code, but its pass/fail gates deployment, so the verdict is
   skimmed by the PM rather than left unwatched.
 - **Engineer → Junior.** Writes production component code; every PR is read line by line

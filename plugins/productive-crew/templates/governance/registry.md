@@ -4,8 +4,7 @@ The one file a successor reads first. "What can touch production right now?"
 
 | Agent | Level | Scope | Verifier | Kill switch |
 |---|---|---|---|---|
-| 🔁 token-parity | Autonomous | read-only — writes nothing | parity-check | `AGENTS_PAUSED` |
-| 🎨 token-builder | Senior | `tokens.json` (imported) → Style Dictionary build (no Airtable) | token-parity | `AGENTS_PAUSED` |
+| 🎨 token-builder | Senior | `tokens.json` (imported) → Style Dictionary build (no Airtable) | token-check | `AGENTS_PAUSED` |
 | 🔍 QA | Senior | Storybook-testing tables · Asana comments · verdict | test records + PM verify | `AGENTS_PAUSED` |
 | 🔨 Engineer | Junior | `src/components/` | vitest + typecheck/lint + QA | `AGENTS_PAUSED` |
 | 🚀 DevOps *(optional — `deploy.enabled`)* | Junior · prod human-gated | git staging→main · Pages deploy | build CI + orchestrator approval | `AGENTS_PAUSED` |

@@ -30,7 +30,6 @@ and scaffolds only what's missing. It never overwrites.
 | Agent | Owns | Level |
 |---|---|---|
 | 🎨 token-builder | tokens.json (imported) → Style Dictionary build | Senior |
-| 🔁 token-parity | every Figma variable present in the build | Autonomous |
 | 🔨 engineer | Figma → code + vitest → PR to staging | Junior |
 | 🔍 qa | test staging then production → findings + verdict | Senior |
 | 🚀 devops | staging → main → production deploy | Junior (prod gated) |
@@ -46,7 +45,6 @@ and scaffolds only what's missing. It never overwrites.
 | `/productive-crew:test <Component>` | QA tests it against Figma, logs findings |
 | `/productive-crew:deploy <Component>` | DevOps promotes staging → production (human-gated) |
 | `/productive-crew:tokens` | token audit — rebuild from Figma |
-| `/productive-crew:parity` | Figma ↔ code token parity check |
 | `/productive-crew:sweep` | PM sweep — verify the whole board |
 
 ## What lands in your repo
@@ -69,7 +67,7 @@ plugins/productive-crew/
 ├── agents/                        the seven crew members
 ├── skills/                        the slash commands
 ├── rules/                         git tiers, status ladder, stack, trust levels, the law
-├── scripts/                       preflight · verify · record · parity-check
+├── scripts/                       preflight · verify · record · token-check
 ├── hooks/hooks.json               kill switch + session-start law injection
 ├── .mcp.json                      figma · airtable · asana
 ├── settings.json                  default permissions

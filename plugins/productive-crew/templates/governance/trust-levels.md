@@ -37,13 +37,10 @@ Demotion is a reset, not a failure. Fix the verifier, tighten the scope, re-prom
 
 Copy the matching line into your review note the day you promote or demote.
 
-- 🔁 **token-parity** — start Observer → target **Autonomous**, scope: **read-only**, writes nothing.
-  Climbs fastest: writes only a status and is its own deterministic verifier. Autonomous after a
-  clean quarter where `parity-check` caught a real mismatch. **Demote** if a "passed" ever hides real drift.
 - 🎨 **token-builder** — start Observer → target **Senior**, scope: the built token output and the
   build config. Never `tokens.json` itself — that is imported. No Airtable.
-  Junior once ≥80% of its token PRs are right over 4 weeks with token-parity catching the bad ones;
-  Senior at ≥95% merged-unchanged over 8 weeks. **Demote** if a token rewrite breaks a component build.
+  Junior once ≥80% of its token builds are right over 4 weeks with `token-check` catching the bad
+  ones; Senior at ≥95% merged-unchanged over 8 weeks. **Demote** if a build breaks a component.
 - 🔨 **Engineer** — start Observer → target **Junior**, scope `src/components/`.
   Advisor→Junior on ≥80% good scoped PRs over 4 weeks with CI + QA catching failures. Stays Junior —
   it writes production code, so every PR is read. **Demote** if a merged component breaks the build.

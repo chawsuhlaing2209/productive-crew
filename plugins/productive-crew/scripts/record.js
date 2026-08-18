@@ -11,7 +11,7 @@ import { verify } from './verify.js';
 const [, , component, field, value] = process.argv;
 
 const EVIDENCE_FIELDS = new Set([
-  'commit', 'staging', 'production', 'astro', 'parity',
+  'commit', 'staging', 'production', 'astro',
 ]);
 const FORBIDDEN = new Set(['development', 'status']); // derived — never written
 
