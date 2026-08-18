@@ -1,4 +1,4 @@
-# Sunim Crew — agent rules
+# Productive Crew — agent rules
 
 Vendor-neutral instructions for every AI IDE (Claude Code, Cursor, Codex).
 A local design-system crew you drive from your editor's chat, on your Pro plan. No API key.

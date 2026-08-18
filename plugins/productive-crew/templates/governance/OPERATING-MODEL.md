@@ -1,4 +1,4 @@
-# Agentic Operating Model — Sunim Design System
+# Agentic Operating Model — Your Design System
 
 > Tools and loops are not an operating model. This is what keeps the fleet running
 > after the person who built it leaves the room.
