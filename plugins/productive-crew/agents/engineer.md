@@ -131,16 +131,18 @@ is raised as a finding. Fix and re-run until clean.
 
 1. **Push staging:** `git switch -c component/<component>`, commit, push. CI re-runs the tests and
    deploys the staging preview.
-2. **Record the commit:** `node "${CLAUDE_PLUGIN_ROOT}/scripts/record.js" <Component> commit <url>`.
-
-3. **Wait for the staging deploy, then prove it.** CI publishes the staging Storybook. Fetch the
+2. **Wait for the staging deploy, then prove it.** CI publishes the staging Storybook. Fetch the
    URL and confirm it is **live (200) and shows your component's stories** — not the last build's.
    A deploy that hasn't finished is not evidence; wait for it or report that you're waiting.
 
-4. **Report it — your card IS the handoff.** You have no board access, by design. Return the
+3. **Report it — your card IS the handoff.** You have no board access, by design. Return the
    commit sha, the verified staging URL, and the ticket id in your card, and the 🧭 PM records
    them: it re-verifies the link itself, writes `Staging Storybook`, and comments the link on the
    ticket. The agent that writes the evidence is deliberately not the agent that produced it.
+
+Note there is no "record" step for you. You have no board access, so the commit sha and the
+staging URL leave your hands as text in a card, not as a write. The PM runs the evidence gate and
+writes both.
 
 **Until the link is verified and reported, the component is not testable.** QA is blocked by design:
 no staging link means no `Ready for Testing`, and it will refuse rather than test something else and

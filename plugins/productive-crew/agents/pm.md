@@ -42,8 +42,11 @@ point: **the agent that writes the evidence is not the agent that produced it.**
 When an agent returns with evidence — the Engineer with a commit and a staging URL, DevOps with a
 production URL:
 
-1. **Verify it yourself.** `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js" <field> <value>` — the
-   link answers 200, the commit resolves. Do not take the card's word for it.
+1. **Clear it through the gate.**
+   `node "${CLAUDE_PLUGIN_ROOT}/scripts/record.js" <Component> <field> <value>` — it verifies the
+   evidence is real (link answers 200, commit resolves) *and* refuses anything that isn't an
+   evidence field, `Development` and `status` included. Exit 0 means you are cleared to write it.
+   Exit 1 means you are not. Do not take the card's word for it, and do not write around the gate.
 2. **Write the evidence column** named in `airtable.fields.components` — `Commit`,
    `Staging Storybook`, `Production Storybook`. Never `Development`: the formula reads what you
    wrote and moves the status itself.

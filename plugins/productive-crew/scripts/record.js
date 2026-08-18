@@ -1,10 +1,18 @@
 #!/usr/bin/env node
-// record.js — write VERIFIED evidence to Airtable. The only door evidence goes through.
+// record.js — the gate every piece of evidence passes before it reaches the board.
 //
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/record.js" <Component> <field> <value>
 //
-// It verifies first (via verify.js), then writes the evidence field — never a status field.
-// Status is a formula; this script refuses to write any formula/status column.
+// Exit 0 = this is real evidence, in a writable column: the caller may now write it.
+// Exit 1 = it is not, for one of three reasons, all of which are refusals:
+//   - the field is derived (Development, status) — the formula owns it, nobody writes it
+//   - the field is not an evidence field at all
+//   - the value did not verify (a link that doesn't answer, a commit that doesn't resolve)
+//
+// It does NOT write. It cannot: the Airtable token is passed to the MCP servers, not to a
+// script run through Bash, so this has no way to authenticate. The PM holds mcp__airtable__*
+// and writes after this clears — which also means the agent that produced the evidence is
+// never the one that records it. Only the PM should call this.
 
 import { verify } from './verify.js';
 
@@ -29,8 +37,8 @@ async function main() {
   const ok = await verify(field, value); // commit resolves? link 200? rows real?
   if (!ok) throw new Error(`unverified ${field}: ${value} — not recorded`);
 
-  // TODO: write { [field]: value } to the component's Airtable row via the Airtable MCP/API.
-  console.log(`recorded ${component}.${field} = ${value} (verified)`);
+  // Cleared. The caller writes it — see the header for why this script doesn't.
+  console.log(`cleared to write: ${component}.${field} = ${value} (verified)`);
 }
 
 main().catch((e) => { console.error(String(e.message || e)); process.exit(1); });
