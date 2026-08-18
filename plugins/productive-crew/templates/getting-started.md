@@ -10,12 +10,15 @@ Full walkthrough: see your course's **Set up your AI workspace** page.
 
 ## 1 · Open the repo
 
-Unzip this folder, open it in the Claude Desktop **Code** tab (Local). `npm install`.
+Open your repo in the Claude Desktop **Code** tab (Local) and `npm install`. The crew itself
+arrives with the **productive-crew** plugin — install it and its agents, skills, and rules are
+available in every session here.
 
-## 2 · Run `/setup` — the crew interviews you
+## 2 · Run `/productive-crew:setup` — the crew interviews you
 
-Type **`/setup`**. It asks you the questions below, then **creates your new Airtable base and
-new Asana project for you**, and writes your `.env` + `productive.config.json`. Nothing by hand.
+Type **`/productive-crew:setup`**. It asks you the questions below, then **creates your new
+Airtable base and new Asana project for you**, and writes your `productive.config.json`.
+Nothing by hand.
 
 **What it asks:**
 
@@ -37,26 +40,28 @@ new Asana project for you**, and writes your `.env` + `productive.config.json`. 
 **What it creates in Asana** (the new project): one task per component + lifecycle subtasks
 (Implementation · Test · Fix · Deploy).
 
-**What it writes locally:** `.env` (your tokens — gitignored) and `productive.config.json` (names + the
-new ids it just made).
+**What it writes locally:** `productive.config.json` — names and the new ids it just made.
+**Never a secret.** Your Airtable and Asana tokens live in the plugin's own config, entered once
+when you installed it, not in this repo. If one is missing the MCP server says so — set it from
+`/plugin`, never by pasting it into a file.
 
 ## 3 · Bring your tokens in
 
-- **`/tokens`** — 🎨 reads your Figma variables, builds `tokens.json`, fills the Base + Semantic tables.
-- **`/parity`** — 🔁 confirms Figma and code tokens agree.
+- **`/productive-crew:tokens`** — 🎨 reads your Figma variables, builds `tokens.json`, fills the Base + Semantic tables.
+- **`/productive-crew:parity`** — 🔁 confirms Figma and code tokens agree.
 
 ## 4 · Build your first component
 
-- **`/build <Component>`** — 🔨 Figma → code + stories + vitest → staging.
-- **`/test <Component>`** — 🔍 tests the staging preview, logs findings (token names, never raw values).
-- Fix loop until green → **`/deploy <Component>`** — 🚀 (your approval) → production.
-- **`/sweep`** — 🧭 the PM verifies the board and syncs Asana any time.
+- **`/productive-crew:build <Component>`** — 🔨 Figma → code + stories + vitest → staging.
+- **`/productive-crew:test <Component>`** — 🔍 tests the staging preview, logs findings (token names, never raw values).
+- Fix loop until green → **`/productive-crew:deploy <Component>`** — 🚀 (your approval) → production.
+- **`/productive-crew:sweep`** — 🧭 the PM verifies the board and syncs Asana any time.
 
 ## 4b · Turn on branch protection
 
 Once your GitHub repo exists, protect **`staging`** and **`main`** (Settings → Branches):
 PR-only, no direct pushes, required checks. Main takes PRs from `staging` only. This is what makes
-`component → staging → main` a rule and not a suggestion. See `.claude/rules/git.md`.
+`component → staging → main` a rule and not a suggestion. See the productive-crew plugin (`rules/git.md`).
 
 ## 5 · Govern it
 

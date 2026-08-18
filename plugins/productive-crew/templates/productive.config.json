@@ -60,7 +60,7 @@
     }
   },
   "stack": {
-    "$note": "Set at /setup. Decides the component code AND the token output. Regenerates tools.md.",
+    "$note": "Set at /productive-crew:setup. Decides the component code AND the token output. Regenerates tools.md.",
     "framework": "react",
     "language": "typescript"
   },
@@ -69,7 +69,7 @@
     "platforms": ["css", "js"]
   },
   "repo": {
-    "$note": "Branch names are yours. Defaults below. If your repo already uses develop/master or another flow, /setup detects it and maps the three tiers (work → preview → production) to your branches. If you rename these, also update the branch refs in .github/workflows/pages.yml.",
+    "$note": "Branch names are yours. Defaults below. If your repo already uses develop/master or another flow, /productive-crew:setup detects it and maps the three tiers (work → preview → production) to your branches. If you rename these, also update the branch refs in .github/workflows/pages.yml.",
     "slug": "owner/your-design-system",
     "componentPrefix": "component/",
     "stagingBranch": "staging",

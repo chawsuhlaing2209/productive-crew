@@ -8,7 +8,7 @@ paths:
 # Stack
 
 This project's stack — framework, language, and the Style Dictionary token platforms — is
-**generated in `tools.md` at the repo root** by `/setup`. **Read `tools.md` first** before writing
+**generated in `tools.md` at the repo root** by `/productive-crew:setup`. **Read `tools.md` first** before writing
 components or tokens. Do not assume React or CSS; follow whatever `tools.md` names.
 
 Conventions that hold on any stack: named exports · tests beside source · one story per state ·

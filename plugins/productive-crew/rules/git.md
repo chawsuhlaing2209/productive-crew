@@ -14,7 +14,7 @@ evidence. But the *names* come from config, so this maps onto any repo:
 | preview / staging | `repo.stagingBranch` | `staging` |
 | production | `repo.mainBranch` | `main` |
 
-If a repo already uses `develop`/`master` or another flow, `/setup` **detects it and maps the tiers
+If a repo already uses `develop`/`master` or another flow, `/productive-crew:setup` **detects it and maps the tiers
 to those branches** — it never imposes `staging`/`main`. (Rename these? Also update the branch refs
 in `.github/workflows/pages.yml`.)
 
