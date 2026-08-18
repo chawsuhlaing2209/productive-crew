@@ -85,10 +85,12 @@ required checks) makes the rule real, not just written. Full rule: `rules/git.md
 
 - **true** (default) — the full pipeline above: Engineer → staging → CI deploys the staging
   Storybook → QA tests the live staging URL → DevOps → production.
-- **false** — no CI, no Pages, no DevOps. Engineer builds + vitest; QA tests the **local**
-  Storybook preview; the lifecycle ends at **Passed**. `/productive-crew:deploy`, the DevOps agent, and
-  `.github/workflows/pages.yml` are unused. The trust model is unchanged — evidence is still
-  verified, just without a deployed URL.
+- **false** — **not wired yet, rather than a supported end state.** No CI, no Pages, no DevOps,
+  and so no staging link — which means **no QA stage and no Staging Testing rows.** The Engineer's
+  own checks are the only gate and the board tracks the commit alone. QA will refuse to run: a
+  local Storybook is not the deployed build, and recording local results as staging evidence is
+  the one thing the board must never contain. Turn it on as soon as the repo has a remote and
+  Pages is enabled.
 
 ## Status ladder (Airtable formula derives each)
 

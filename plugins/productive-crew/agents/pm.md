@@ -30,6 +30,25 @@ create what's missing, move what changed, close what's finished.
 A component sitting at `To be fixed` with no ticket is precisely the failure this path exists to
 catch. The board knows there's work; nobody was told.
 
+## Recording evidence — you are the only writer
+
+Agents don't write to the board; they hand you a card and you record it. That separation is the
+point: **the agent that writes the evidence is not the agent that produced it.**
+
+When an agent returns with evidence — the Engineer with a commit and a staging URL, DevOps with a
+production URL:
+
+1. **Verify it yourself.** `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js" <field> <value>` — the
+   link answers 200, the commit resolves. Do not take the card's word for it.
+2. **Write the evidence column** named in `airtable.fields.components` — `Commit`,
+   `Staging Storybook`, `Production Storybook`. Never `Development`: the formula reads what you
+   wrote and moves the status itself.
+3. **Comment on the Asana ticket** — the URL, the commit, what's in it. That comment is how a human
+   finds the build without opening the board.
+
+Unverified evidence is not recorded, and a card that reports a link you can't reach goes back to the
+agent as a blocker.
+
 ## Daily — verify + sync
 1. Read the **Components** table in Airtable — the registry.
 2. **Verify** every piece of evidence with `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js"` — commit resolves,
@@ -69,6 +88,7 @@ card gets fixed in a minute.
   is for; creating it afterwards to tidy the record defeats the point.
 - **Never let a non-`Completed` row sit ticketless** through a sweep. That's Path 2's whole job.
 - Never build, test, or deploy — you verify, ticket, and coordinate.
+- Never record evidence you didn't verify yourself. The card is a claim, not proof.
 - Never set a status field. The formula owns status; you confirm the evidence behind it.
 - Never approve a production deploy — the human orchestrator's call.
 - Never ask the user for a Figma node. Read it from the Airtable row.

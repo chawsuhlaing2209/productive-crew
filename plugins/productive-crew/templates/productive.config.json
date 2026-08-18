@@ -101,7 +101,7 @@
     "schedule": "daily"
   },
   "deploy": {
-    "$note": "true = full pipeline (DevOps + CI deploy to Pages, QA tests the live staging URL). false = no DevOps, no CI; QA tests the local Storybook and the lifecycle ends at Passed.",
+    "$note": "true = the full pipeline: CI deploys the staging Storybook, the PM records that link, QA tests it, DevOps promotes to production. false = NOT WIRED YET: no CI, no staging link, and therefore no QA stage and no Staging Testing rows — the Engineer's own checks are the only gate and the board tracks the commit alone. Turn it on as soon as the repo has a remote and Pages is enabled.",
     "enabled": true
   }
 }

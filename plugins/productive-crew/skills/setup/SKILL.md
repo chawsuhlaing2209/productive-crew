@@ -56,7 +56,10 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
 6. **token-builder schedule** — daily / weekly / manual → `tokenBuilder.schedule`.
 7. **Deployment?** — DevOps agent + Pages CI?
    - *Existing deploy found* → default to reusing it; confirm before adding ours.
-   - **No** → `deploy.enabled: false`; skip DevOps, `pages.yml`, `/productive-crew:deploy`. QA tests local Storybook; lifecycle ends at Passed.
+   - **No** → `deploy.enabled: false`; skip DevOps, `pages.yml`, `/productive-crew:deploy`. Say what
+     this costs, plainly: **no staging link means no QA stage and no test records** — the lifecycle
+     stops after the Engineer's own checks. It is a starting state, not a destination. Default to
+     **yes** whenever the repo has a remote; only take no when it genuinely has nowhere to deploy.
    - **Yes** → keep the full pipeline.
 8. **Astro docs?** — yes / no (enables doc-generator).
 9. **Orchestrator name** (you) → `governance/registry.md`.
