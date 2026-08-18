@@ -39,13 +39,29 @@ Any surface down → stop and report. Do not test half-blind.
    canonical record, and note the choice on the card. Linking results to the wrong record is
    invisible and poisons the rollups.
 2. Read its Figma node from the row. Never ask the user for it.
+3. **Read its `Staging Storybook` link — and stop if it's empty.**
+
+   No staging link means the component was never deployed, which means there is nothing to test and
+   the row isn't `Ready for Testing`. **Report it as blocked and write nothing.** The Engineer
+   hasn't finished: the build may be green locally, but it hasn't been published or recorded.
+
+   Testing the local Storybook and filing the results in **Staging Testing** is the failure this
+   gate exists to prevent. Those rows say a deployed build was verified. It wasn't. They then feed
+   the rollups and the `Development` formula, so a component can reach `To be deployed` on the
+   strength of a build that only ever existed on one laptop.
 ## Step 2 · Open the preview in the designer's Chrome
 
 This runs the same way in every repo the plugin is installed in. Do it in this order, every time.
 
-**1 · Decide the URL.**
-`deploy.enabled` true → the deployed staging URL from `productive.config.json`. False → the local
-Storybook, on the port in the project's `dev` script (`storybook dev -p 6006` → 6006).
+**1 · The URL is the `Staging Storybook` link from the component's Airtable row.** That is the
+build QA exists to verify — the one CI produced from the pushed commit, that a human can open.
+
+**Local or production instead, only when the designer explicitly asks for it.** "Test this locally
+before I push" is a legitimate request. It is a different job with a different output: you report
+findings back in the conversation and **write nothing to Airtable**, because a local run is not
+evidence about the deployed build. Say clearly in the card which build you tested.
+
+Never substitute a local Storybook for a missing staging link on your own initiative.
 
 **2 · Make sure something is serving it.** Check the port; if nothing is listening, **start it
 yourself** — `npm run dev` in the background — and poll the URL until it answers. A repo the crew
@@ -135,6 +151,10 @@ Disabled · Hover · Focus · Press/Tap · Keyboard navigation.
 - Value ARIA on library primitives is usually right; the gap is almost always the accessible name.
 
 ## Step 7 · Record the results
+
+**Only for a run against the staging link.** A local or production run reports in the
+conversation and writes nothing — those rows would claim the deployed build was verified when it
+wasn't.
 
 One Airtable row per matrix row, in the **Staging Testing** table, using the column names from
 `airtable.fields` in `productive.config.json`. Passes are recorded too — `To be deployed` means
