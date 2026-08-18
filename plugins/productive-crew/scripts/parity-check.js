@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // parity-check.js — token-parity's deterministic verifier.
-// Compares Figma tokens against local tokens/tokens.json and reports mismatches.
+// Checks the built tokens are COMPLETE against the Figma library: every variable present,
+// values matching, every mode covered.
 //
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/parity-check.js"
 //
@@ -14,7 +15,17 @@ function loadLocal() {
 }
 
 async function loadFigma() {
-  // TODO: read tokens from the Figma MCP. Placeholder returns the local set (always passes).
+  // TODO: GET https://api.figma.com/v1/files/{fileKey}/variables/local
+  //   fileKey  <- figma.files.tokens in productive.config.json
+  //   header   <- X-Figma-Token: <the plugin's figma_token>
+  //   then map the response's variables + modes into the same shape as tokens.json.
+  //
+  // It MUST be this endpoint, not the MCP's get_variable_defs: the MCP returns only the
+  // variables APPLIED in the file, so a variable missing from the build would never show up
+  // as missing — the exact failure this script exists to catch.
+  //
+  // Until it's implemented this returns the local set, which means the check ALWAYS PASSES.
+  // Treat a pass from this script as unproven until the endpoint is wired up.
   return loadLocal();
 }
 

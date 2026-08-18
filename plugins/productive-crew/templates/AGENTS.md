@@ -56,7 +56,7 @@ a blocker is a card too — what broke + one thing to try.
 | Agent | Owns | Level |
 |---|---|---|
 | 🎨 token-builder | tokens.json (imported) → Style Dictionary build (no Airtable) | Senior |
-| 🔁 token-parity | Figma ↔ code token parity → a verdict, read-only | Autonomous |
+| 🔁 token-parity | every Figma variable present in the build → a verdict, read-only | Autonomous |
 | 🔨 Engineer | Figma → code + vitest → PR to staging | Junior |
 | 🔍 QA | test staging → findings + verdict | Senior |
 | 🚀 DevOps | staging → main → production deploy | Junior (prod gated) |

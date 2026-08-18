@@ -59,7 +59,7 @@ Two gates before you write a line of code:
 - **The built tokens must be current.** Missing, or older than `tokens/tokens.json` — the export
   landed and nothing rebuilt — → stop and have 🎨 token-builder run. Never build a component on
   stale tokens.
-- **Figma and code must be verified in sync**, not assumed. If token-parity is failing or hasn't
+- **The token set must be verified complete**, not assumed. If token-parity is failing or hasn't
   run since the last token change, that's a stop: the parity check is what makes "the token exists"
   mean "the token is right".
 
