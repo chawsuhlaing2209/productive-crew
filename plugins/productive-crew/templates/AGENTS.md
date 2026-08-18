@@ -26,7 +26,7 @@ Any component request (e.g. "build Button") goes to the **PM** first. Never skip
 and **never ask the user for a Figma node** — it lives in the Airtable row.
 
 1. **Config check.** Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"`. If config isn't set up
-   (missing `sunim.config.json`, or placeholder ids), run `/productive-crew:setup` and stop.
+   (missing `productive.config.json`, or placeholder ids), run `/productive-crew:setup` and stop.
 2. **Registry check — Airtable first.** Airtable is the registry. Look the component up in the
    Components table.
    - **Not there** → tell the designer it isn't registered, and offer to add it (only *then*
@@ -81,7 +81,7 @@ A human approves before production. Deploy is CI (GitHub Actions + Pages), never
 `component/<name> → staging → main`. Every PR targets **staging** — never main. Main accepts PRs
 from **staging only**, opened by DevOps with the human's approval. **The merge to staging deploys
 the staging Storybook — that deploy is the evidence.** Branch protection (PR-only, no direct pushes,
-required checks) makes the rule real, not just written. Full rule: `the productive-crew plugin (rules/git.md)`.
+required checks) makes the rule real, not just written. Full rule: `rules/git.md` in the productive-crew plugin.
 
 ## Deployment is optional (`deploy.enabled`, asked at /productive-crew:setup)
 
@@ -105,7 +105,7 @@ Airtable dashboard · Asana tasks.
 
 ## Config
 
-- Names + ids live in `sunim.config.json` (this repo). **Secrets live in the plugin config**
+- Names + ids live in `productive.config.json` (this repo). **Secrets live in the plugin config**
   — set at install time, never in this repo.
 - Claude runs on your Pro login — never set `ANTHROPIC_API_KEY`.
 

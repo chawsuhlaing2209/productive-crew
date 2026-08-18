@@ -9,7 +9,7 @@
 
 ## Usage
 ```css
-@import './productive-crew:build/tokens/css/tokens.css';
+@import './build/tokens/css/tokens.css';
 
 .button {
   background: var(--color-primary);

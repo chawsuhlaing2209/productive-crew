@@ -8,8 +8,8 @@
     "baseId": "appXXXXXXXXXXXXXX",
     "tables": {
       "components": "Components",
-      "baseTokens": "Base tokens",
-      "semanticTokens": "Semantic tokens",
+      "baseTokens": "Base Tokens",
+      "semanticTokens": "Semantic Tokens",
       "stagingTesting": "Staging Testing",
       "productionTesting": "Production Testing"
     }
@@ -37,12 +37,12 @@
   },
   "repo": {
     "$note": "Branch names are yours. Defaults below. If your repo already uses develop/master or another flow, /setup detects it and maps the three tiers (work → preview → production) to your branches. If you rename these, also update the branch refs in .github/workflows/pages.yml.",
-    "slug": "owner/sunim-design-system",
+    "slug": "owner/your-design-system",
     "componentPrefix": "component/",
     "stagingBranch": "staging",
     "mainBranch": "main",
-    "stagingUrl": "https://owner.github.io/sunim-design-system/staging/",
-    "productionUrl": "https://owner.github.io/sunim-design-system/"
+    "stagingUrl": "https://owner.github.io/your-design-system/staging/",
+    "productionUrl": "https://owner.github.io/your-design-system/"
   },
   "tokenAudit": { "schedule": "weekly" },
   "pm": { "schedule": "daily" },

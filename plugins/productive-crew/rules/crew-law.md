@@ -31,7 +31,7 @@ built output for `tokens.platforms` is missing, the PM assigns 🎨 token-audit 
 
 ## Git — three tiers
 
-`component/<name> → staging → main` (names come from `repo.*` in `sunim.config.json`).
+`component/<name> → staging → main` (names come from `repo.*` in `productive.config.json`).
 Every PR targets **staging**; the merge to staging deploys the staging Storybook, and *that deploy
 is the evidence*. Main accepts PRs from staging only, opened by DevOps with human approval.
 

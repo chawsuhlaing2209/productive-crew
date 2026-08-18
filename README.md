@@ -51,7 +51,7 @@ and scaffolds only what's missing. It never overwrites.
 
 ## What lands in your repo
 
-Only `sunim.config.json` (names and ids, never a secret), `AGENTS.md` + `CLAUDE.md` (so Cursor and
+Only `productive.config.json` (names and ids, never a secret), `AGENTS.md` + `CLAUDE.md` (so Cursor and
 Codex read the same law), `governance/`, and whatever scaffolding you didn't already have.
 The agents, skills, rules, and scripts stay in the plugin — update the plugin to change them.
 

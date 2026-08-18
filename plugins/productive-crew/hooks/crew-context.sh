@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ROOT="${CLAUDE_PROJECT_DIR:-$PWD}"
-[ -f "$ROOT/sunim.config.json" ] || exit 0
+[ -f "$ROOT/productive.config.json" ] || exit 0
 
 LAW="${CLAUDE_PLUGIN_ROOT}/rules/crew-law.md"
 [ -f "$LAW" ] || exit 0

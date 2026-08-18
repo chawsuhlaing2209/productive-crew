@@ -15,7 +15,7 @@ Unzip this folder, open it in the Claude Desktop **Code** tab (Local). `npm inst
 ## 2 · Run `/setup` — the crew interviews you
 
 Type **`/setup`**. It asks you the questions below, then **creates your new Airtable base and
-new Asana project for you**, and writes your `.env` + `sunim.config.json`. Nothing by hand.
+new Asana project for you**, and writes your `.env` + `productive.config.json`. Nothing by hand.
 
 **What it asks:**
 
@@ -37,7 +37,7 @@ new Asana project for you**, and writes your `.env` + `sunim.config.json`. Nothi
 **What it creates in Asana** (the new project): one task per component + lifecycle subtasks
 (Implementation · Test · Fix · Deploy).
 
-**What it writes locally:** `.env` (your tokens — gitignored) and `sunim.config.json` (names + the
+**What it writes locally:** `.env` (your tokens — gitignored) and `productive.config.json` (names + the
 new ids it just made).
 
 ## 3 · Bring your tokens in

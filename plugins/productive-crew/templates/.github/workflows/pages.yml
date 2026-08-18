@@ -9,7 +9,7 @@ name: pages
 #
 # Requires: Settings → Pages → Source = GitHub Actions.
 #
-# Branch names below must match repo.stagingBranch / repo.mainBranch in sunim.config.json.
+# Branch names below must match repo.stagingBranch / repo.mainBranch in productive.config.json.
 # If your repo uses develop/master or other names, change them here too (staging→preview, main→prod).
 on:
   push:

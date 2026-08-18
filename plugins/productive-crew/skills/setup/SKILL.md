@@ -86,7 +86,7 @@ New base named after the design system, tables:
 - **Production Testing** — same shape.
 
 Wire **Development** as a *derived* formula (Figma link → To-do; staging link → Ready for testing;
-all Passed → To be deployed; … → Completed). Never make Development writable. Write the ids into `sunim.config.json`.
+all Passed → To be deployed; … → Completed). Never make Development writable. Write the ids into `productive.config.json`.
 
 > On an **existing repo**, leave the Components table empty — the crew registers a component the
 > first time it works on it. Setup creates the structure, not a census of what's already there.
@@ -96,7 +96,7 @@ all Passed → To be deployed; … → Completed). Never make Development writab
 ## 3 · Create Asana (if yes)
 
 New project + a task template: one task per component with subtasks Implementation · Test · Fix · Deploy.
-Write `workspaceId` + `projectId` into `sunim.config.json`.
+Write `workspaceId` + `projectId` into `productive.config.json`.
 
 > TODO: implement via the Asana MCP.
 
@@ -107,7 +107,7 @@ repo doesn't already have, one at a time, saying what you're adding:
 
 | Template | Copy to | Skip when |
 |---|---|---|
-| `templates/sunim.config.json` | repo root | it already exists — edit it instead |
+| `templates/productive.config.json` | repo root | it already exists — edit it instead |
 | `templates/AGENTS.md` | repo root | an `AGENTS.md` exists — append the crew section, never replace |
 | `templates/CLAUDE.md` | repo root | a `CLAUDE.md` exists — add the `@AGENTS.md` import if absent |
 | `templates/governance/` | repo root | a `governance/` exists |
@@ -122,7 +122,7 @@ plugin. Claude Code also gets it injected at session start, but the file is the 
 
 ## 4b · Write config
 
-- `sunim.config.json` — names + the new ids. **Never a secret.**
+- `productive.config.json` — names + the new ids. **Never a secret.**
 - `governance/registry.md` — the orchestrator's name.
 - Secrets are **not** written to this repo. Airtable and Asana tokens come from the plugin's own
   config, set when the plugin was installed. If a token is missing, the MCP server will say so —

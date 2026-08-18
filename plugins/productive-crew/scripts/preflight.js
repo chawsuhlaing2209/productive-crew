@@ -16,9 +16,9 @@ function main() {
 
   let cfg;
   try {
-    cfg = JSON.parse(readFileSync(projectPath('sunim.config.json'), 'utf8'));
+    cfg = JSON.parse(readFileSync(projectPath('productive.config.json'), 'utf8'));
   } catch {
-    problems.push('sunim.config.json is missing or invalid');
+    problems.push('productive.config.json is missing or invalid');
     return report(problems);
   }
 
