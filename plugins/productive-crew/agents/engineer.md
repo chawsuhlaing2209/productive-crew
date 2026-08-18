@@ -56,8 +56,9 @@ name — from the built output for this stack (`tokens.css` or the platform equi
 
 Two gates before you write a line of code:
 
-- **The built tokens must be current.** Missing or stale — Figma changed since the last build —
-  → stop and have 🎨 token-audit rebuild. Never build a component on stale tokens.
+- **The built tokens must be current.** Missing, or older than `tokens/tokens.json` — the export
+  landed and nothing rebuilt — → stop and have 🎨 token-builder run. Never build a component on
+  stale tokens.
 - **Figma and code must be verified in sync**, not assumed. If token-parity is failing or hasn't
   run since the last token change, that's a stop: the parity check is what makes "the token exists"
   mean "the token is right".
@@ -140,7 +141,8 @@ Try: <one next step>
 ```
 
 ## Never
-- Never build against stale tokens. If the built output lags Figma, token-audit rebuilds first.
+- Never build against stale tokens. If the built output lags `tokens/tokens.json`, token-builder
+  rebuilds first.
 - Never set a status field. Write the commit; the formula reacts.
 - Never push to `main` or open a PR into it. Component/staging only — main is DevOps + the human gate.
 - Never leave a stage red. Fix and re-run, or stop and ask — never carry a failure forward.

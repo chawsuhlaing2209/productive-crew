@@ -24,11 +24,12 @@ function main() {
 
   if (looksUnset(cfg.airtable?.baseId)) problems.push('airtable.baseId is not set');
   if (looksUnset(cfg.asana?.projectId)) problems.push('asana.projectId is not set');
-  // Only the tokens file is required — token-audit reads it. If you have ONE Figma file,
-  // put it here. Component nodes are read per-row from Airtable, so figma.files.components
-  // is optional (leave it blank for a single-file setup).
+  // The tokens file is what token-parity compares against. token-builder does NOT read it —
+  // its source is the exported tokens/tokens.json in the repo. If you have ONE Figma file, put
+  // it here. Component nodes are read per-row from Airtable, so figma.files.components is
+  // optional (leave it blank for a single-file setup).
   if (looksUnset(cfg.figma?.files?.tokens)) {
-    problems.push('figma.files.tokens is not set (the file token-audit reads — for a single-file setup, put that file here)');
+    problems.push('figma.files.tokens is not set (the file token-parity compares against — for a single-file setup, put that file here)');
   }
   if (looksUnset(cfg.repo?.slug)) problems.push('repo.slug is not set');
 

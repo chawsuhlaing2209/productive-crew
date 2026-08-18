@@ -29,7 +29,7 @@ Nothing by hand.
 | 3 | GitHub repo (public, for free hosting) | yourname/pineapple-ds |
 | 4 | Airtable — **create a new base for me?** | yes → it builds the tables + formula |
 | 5 | Asana — **create a new project for me?** | yes → it builds the board + subtasks |
-| 6 | token-audit schedule | daily · weekly · manual |
+| 6 | token-builder schedule | daily · weekly · manual |
 | 7 | Generate Astro docs? | yes / no |
 | 8 | Orchestrator name (you) | for the registry |
 

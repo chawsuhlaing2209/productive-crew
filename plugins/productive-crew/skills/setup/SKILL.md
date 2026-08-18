@@ -53,7 +53,7 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
     ask: adapt it or add ours alongside. Never clobber.**
 4. **Airtable** — new base? (yes → build it; no → paste an existing `baseId`).
 5. **Asana** — new project? (yes → build it; no → paste `projectId`).
-6. **token-audit schedule** — daily / weekly / manual → `tokenAudit.schedule`.
+6. **token-builder schedule** — daily / weekly / manual → `tokenBuilder.schedule`.
 7. **Deployment?** — DevOps agent + Pages CI?
    - *Existing deploy found* → default to reusing it; confirm before adding ours.
    - **No** → `deploy.enabled: false`; skip DevOps, `pages.yml`, `/productive-crew:deploy`. QA tests local Storybook; lifecycle ends at Passed.
@@ -66,13 +66,18 @@ React + TypeScript · vitest · components in src/ui/ · default branch main · 
 - **Generate `tools.md`** from the stack + platform answers, *before anything builds*.
 - **Tokens branch on what §0 detected:**
 
-| Repo state | 🎨 token-audit does |
+| Repo state | 🎨 token-builder does |
 |---|---|
-| **No pipeline** (fresh) | scaffold Style Dictionary + a config for `tokens.platforms` + `npm run tokens:build`; build the first tokens from the Figma tokens file |
+| **No pipeline** (fresh) | scaffold Style Dictionary + a config for `tokens.platforms` + `npm run tokens:build`; build once `tokens/tokens.json` has been exported into the repo |
 | **Style Dictionary already present** | adopt it in place — read the existing config, confirm platforms, run the audit; don't re-scaffold |
 | **Tokens exist, other form** (raw CSS vars, a different tool) | audit in place and **report**: keep / migrate to Style Dictionary / leave as-is — migrate only on the user's say-so |
 
-No component is built until tokens are audited and delivered — same gate either way.
+No component is built until tokens are audited, built and delivered — same gate either way.
+
+**The token source is an exported file.** `tokens/tokens.json` comes from Figma by a designer
+committing the export or by CI/CD, and always lives at that exact path. Tell the user this during
+setup: the crew builds tokens, it does not export them, because a Figma read only returns the
+variables that are *applied* and would silently miss the rest.
 
 ## 2 · Create Airtable (if yes)
 

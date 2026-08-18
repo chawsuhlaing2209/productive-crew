@@ -43,14 +43,27 @@
     },
     "choices": {
       "$comment": "Cell VALUES, not column names — left exactly as the base spells them today. The Development formula matches these literally. Parity Status is inconsistent between the token tables (Base Tokens: 'In Testing', Semantic Tokens: 'In testing') and still needs a decision.",
-      "result": ["Passed", "Failed", "Fixed (To re-test)"],
-      "parity": ["Passed", "Failed", "In Testing"]
+      "result": [
+        "Passed",
+        "Failed",
+        "Fixed (To re-test)"
+      ],
+      "parity": [
+        "Passed",
+        "Failed",
+        "In Testing"
+      ]
     }
   },
   "asana": {
     "workspaceId": "0000000000000000",
     "projectId": "0000000000000000",
-    "agents": { "engineer": "", "qa": "", "devops": "", "pm": "" }
+    "agents": {
+      "engineer": "",
+      "qa": "",
+      "devops": "",
+      "pm": ""
+    }
   },
   "figma": {
     "$note": "Only tokens is required. One Figma file? set tokens, leave components blank. Components are read per-row from Airtable, so add component files only if you want them named here.",
@@ -66,7 +79,10 @@
   },
   "tokens": {
     "buildTool": "style-dictionary",
-    "platforms": ["css", "js"]
+    "platforms": [
+      "css",
+      "js"
+    ]
   },
   "repo": {
     "$note": "Branch names are yours. Defaults below. If your repo already uses develop/master or another flow, /productive-crew:setup detects it and maps the three tiers (work → preview → production) to your branches. If you rename these, also update the branch refs in .github/workflows/pages.yml.",
@@ -77,8 +93,13 @@
     "stagingUrl": "https://owner.github.io/your-design-system/staging/",
     "productionUrl": "https://owner.github.io/your-design-system/"
   },
-  "tokenAudit": { "schedule": "weekly" },
-  "pm": { "schedule": "daily" },
+  "tokenBuilder": {
+    "$note": "The build runs when tokens/tokens.json changes. The schedule is a safety net for when a change lands without triggering a run — not the primary trigger.",
+    "schedule": "weekly"
+  },
+  "pm": {
+    "schedule": "daily"
+  },
   "deploy": {
     "$note": "true = full pipeline (DevOps + CI deploy to Pages, QA tests the live staging URL). false = no DevOps, no CI; QA tests the local Storybook and the lifecycle ends at Passed.",
     "enabled": true

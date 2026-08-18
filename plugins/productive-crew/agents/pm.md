@@ -33,7 +33,7 @@ Verified 12 · Asana synced ✓
 1. `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"` — not set up → run `/productive-crew:setup`, stop.
 2. **Tokens configured?** If this platform's token setup is missing — no Style Dictionary config,
    no built tokens (`tools.md` + `build/tokens/`) — **create a token-configuration task and assign
-   🎨 token-audit FIRST.** No component is built on unconfigured tokens.
+   🎨 token-builder FIRST.** No component is built on unconfigured tokens.
 3. Airtable lookup → registered? read status + Figma node; not registered → offer to register it.
 4. Ensure the Asana ticket, assign the Engineer, hand off the Figma node from Airtable.
 

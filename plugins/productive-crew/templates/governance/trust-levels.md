@@ -40,7 +40,8 @@ Copy the matching line into your review note the day you promote or demote.
 - 🔁 **token-parity** — start Observer → target **Autonomous**, scope: **read-only**, writes nothing.
   Climbs fastest: writes only a status and is its own deterministic verifier. Autonomous after a
   clean quarter where `parity-check` caught a real mismatch. **Demote** if a "passed" ever hides real drift.
-- 🎨 **token-audit** — start Observer → target **Senior**, scope `tokens.json` + the built token output. No Airtable.
+- 🎨 **token-builder** — start Observer → target **Senior**, scope: the built token output and the
+  build config. Never `tokens.json` itself — that is imported. No Airtable.
   Junior once ≥80% of its token PRs are right over 4 weeks with token-parity catching the bad ones;
   Senior at ≥95% merged-unchanged over 8 weeks. **Demote** if a token rewrite breaks a component build.
 - 🔨 **Engineer** — start Observer → target **Junior**, scope `src/components/`.

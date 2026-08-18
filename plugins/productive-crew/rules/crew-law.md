@@ -63,7 +63,7 @@ and **never ask the user for a Figma node** — it lives in the Airtable row.
 ## Tokens are configured first
 
 No component is built on unconfigured tokens. If `tools.md`, the Style Dictionary config, or the
-built output for `tokens.platforms` is missing, the PM assigns 🎨 token-audit first.
+built output for `tokens.platforms` is missing, the PM assigns 🎨 token-builder first.
 
 ## Git — three tiers
 

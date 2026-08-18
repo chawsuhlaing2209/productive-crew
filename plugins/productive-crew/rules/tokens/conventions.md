@@ -5,7 +5,7 @@ paths:
 
 # Token conventions
 
-> **Trust here:** token-parity is Autonomous, token-audit is Senior. See `governance/trust-levels.md`.
+> **Trust here:** token-parity is Autonomous, token-builder is Senior. See `governance/trust-levels.md`.
 
 Two tiers:
 
@@ -26,4 +26,4 @@ at once.
 
 ⛔ PENDING — drop the formula-generated naming rule here, e.g. the tiers and order
 (`category / role / prominence / state` → `bg/primary/hover`). Once it's here,
-wire it into `token-audit` step 6.
+wire it into `token-builder` step 6.

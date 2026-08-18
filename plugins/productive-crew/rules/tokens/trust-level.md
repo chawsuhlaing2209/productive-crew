@@ -5,10 +5,12 @@ paths:
 
 # Trust — `tokens/`
 
-**Agents here:** 🎨 token-audit (**Senior**) · 🔁 token-parity (**Autonomous**)
+**Agents here:** 🎨 token-builder (**Senior**) · 🔁 token-parity (**Autonomous**)
 
 **Allowed**
-- token-audit may rewrite `tokens.json` and the built output — Senior, so merges are skimmed, not read line by line. It has no Airtable access and writes no tokens there.
+- token-builder may rewrite the **built output** and the build config — Senior, so merges are
+  skimmed, not read line by line. It never writes `tokens.json`: that file is imported, and the
+  agent's job starts where the export lands. No Airtable access.
 - token-parity writes nothing at all — it reads both sides and reports. Autonomous because a
   read-only check has nothing to get wrong except its own verdict.
 

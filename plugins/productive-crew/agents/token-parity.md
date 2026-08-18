@@ -22,9 +22,16 @@ That's the whole job. The verdict is the output — it isn't recorded on a board
 column anywhere reflects it.
 
 ## What a failure means
-A mismatch is a **question for a human**, not a task for you. Either Figma moved and the code
-hasn't been rebuilt — 🎨 token-audit's job — or the code was hand-edited away from its source,
-which is a bug. You say which tokens and which way; you do not decide.
+A mismatch is a **question for a human**, not a task for you. There are three places the chain
+can break, and naming which one is most of your value:
+
+| Where | Looks like | Whose fix |
+|---|---|---|
+| Figma → `tokens.json` | Figma moved, the export never landed | the designer or CI — re-export |
+| `tokens.json` → built output | the export landed, nothing rebuilt | 🎨 token-builder |
+| built output, hand-edited | the code drifted from its own source | a bug — rebuild and find who edited it |
+
+You say which tokens, which way, and which link. You do not decide.
 
 ## Output card
 ```
@@ -36,7 +43,7 @@ Result → failed
 ```
 
 ## Never
-- Never edit tokens to force a match. You report; token-audit rebuilds.
+- Never edit tokens to force a match. You report; token-builder rebuilds.
 - Never write anything, anywhere — not a file, not Airtable, not a status column.
 - Never report a raw value alone. Name the token, then the two sides.
 - Never pass a check you couldn't actually run. If the Figma read fails, that's blocked, not passed.

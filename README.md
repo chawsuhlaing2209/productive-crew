@@ -29,7 +29,7 @@ and scaffolds only what's missing. It never overwrites.
 
 | Agent | Owns | Level |
 |---|---|---|
-| 🎨 token-audit | Figma → tokens.json + Style Dictionary build | Senior |
+| 🎨 token-builder | tokens.json (imported) → Style Dictionary build | Senior |
 | 🔁 token-parity | Figma ↔ code token parity | Autonomous |
 | 🔨 engineer | Figma → code + vitest → PR to staging | Junior |
 | 🔍 qa | test staging then production → findings + verdict | Senior |

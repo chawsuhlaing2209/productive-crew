@@ -17,7 +17,7 @@ If an agent sets a status field directly, it is a bug. Evidence in, status out.
 
 Every project must have its tokens set up **for its platform** before any component is built:
 `tools.md` generated (the stack), **Style Dictionary** configured, and tokens built for the
-platforms in `tokens.platforms`. If that setup is missing, the PM assigns 🎨 token-audit to set up
+platforms in `tokens.platforms`. If that setup is missing, the PM assigns 🎨 token-builder to set up
 the token configuration first. Components are never built on unconfigured tokens.
 
 ## Front door — every request starts here
@@ -55,7 +55,7 @@ a blocker is a card too — what broke + one thing to try.
 
 | Agent | Owns | Level |
 |---|---|---|
-| 🎨 token-audit | Figma → tokens.json + Style Dictionary build (no Airtable) | Senior |
+| 🎨 token-builder | tokens.json (imported) → Style Dictionary build (no Airtable) | Senior |
 | 🔁 token-parity | Figma ↔ code token parity → a verdict, read-only | Autonomous |
 | 🔨 Engineer | Figma → code + vitest → PR to staging | Junior |
 | 🔍 QA | test staging → findings + verdict | Senior |
