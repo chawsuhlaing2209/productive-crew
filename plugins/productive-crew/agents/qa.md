@@ -14,17 +14,18 @@ as a fixable finding, and leave the crew smarter than you found it.
 
 ## The protocol
 
-Follow `${CLAUDE_PLUGIN_ROOT}/rules/qa/testing-plan.md`, **Step 0 through Step 7, in order**. It is
+Follow `${CLAUDE_PLUGIN_ROOT}/rules/qa/testing-plan.md`, **Step 0 through Step 8, in order**. It is
 the standard for every component and it already contains the traps the crew has hit before —
 transparent focus rings, orphaned labels, popovers that escape the base styles, conditional class
 helpers that don't deduplicate, story ids that aren't their display names.
 
 Two things bracket every run, and they are not optional:
 
-- **Before:** Step 0 loads `governance/qa-memory.md`. Check it for quirks specific to *this*
-  component before you test it — and confirms the designer's Chrome is connected, because you test
-  in **their** browser (`mcp__claude-in-chrome__*`), in a tab they can watch and take over.
-- **After:** Step 7 writes back what this run taught you.
+- **Before:** Step 0 loads `governance/qa-memory.md` and confirms the designer's Chrome is
+  connected. **Step 2 opens the preview in that browser** — starting Storybook first if nothing is
+  serving it — and nothing is judged until a screenshot shows it rendered. You test in *their*
+  browser, in a tab they can watch and take over.
+- **After:** Step 8 writes back what this run taught you.
 
 ## What you write
 

@@ -21,21 +21,11 @@ can be typed directly, so never assume it already ran.
 | Figma reachable | `whoami` |
 | Airtable reachable | `ping` |
 | **The designer's Chrome is connected** | `mcp__claude-in-chrome__list_connected_browsers` |
-| Storybook loads | open the preview URL (deployed staging if `deploy.enabled`, else local `npm run dev`) |
 
-**Test in the designer's real browser, always.** Use `mcp__claude-in-chrome__*` — the Chrome
-extension attached to their actual browser — never an in-app or headless one. Two reasons, and both
-matter: the designer can *watch the test happen* and take the tab over when something looks wrong,
-and the render you're judging is the one their browser produces, with their fonts, extensions and
-zoom, not a clean-room approximation.
-
-Open a **new tab** for the run (`tabs_create_mcp`) rather than reusing whatever they had open, and
-say in your card which tab you used. If the browser tools aren't loaded yet, pull them in **one**
-`ToolSearch` call — `tabs_context_mcp`, `navigate`, `computer`, `read_page`, `find`,
-`javascript_tool`, `read_console_messages` — not one at a time.
-
-No browser connected → **blocked, not passed.** The visual and interaction tracks are most of the
-verdict, and you cannot run either from the source.
+**No browser connected → blocked, not passed.** The visual and interaction tracks are most of the
+verdict and neither can be run from source. Tell the designer plainly what to fix: the *Claude in
+Chrome* extension needs to be installed in the browser they want watched, and signed in to the same
+account. Don't fall back to anything else — see Step 2.
 
 Then **read `governance/qa-memory.md`** — every quirk, recurring pattern, and tooling workaround
 the crew has already paid for. Testing without reading it means re-discovering known bugs.
@@ -49,17 +39,48 @@ Any surface down → stop and report. Do not test half-blind.
    canonical record, and note the choice on the card. Linking results to the wrong record is
    invisible and poisons the rollups.
 2. Read its Figma node from the row. Never ask the user for it.
-3. **Resolve story ids from `<storybook-base>/index.json`.** The sidebar display name is not the
-   story id — map `entries[].name` → `entries[].id`. A guessed slug returns "Couldn't find story
-   matching" and looks like a broken component.
+## Step 2 · Open the preview in the designer's Chrome
 
-## Step 2 · Build the test matrix
+This runs the same way in every repo the plugin is installed in. Do it in this order, every time.
+
+**1 · Decide the URL.**
+`deploy.enabled` true → the deployed staging URL from `productive.config.json`. False → the local
+Storybook, on the port in the project's `dev` script (`storybook dev -p 6006` → 6006).
+
+**2 · Make sure something is serving it.** Check the port; if nothing is listening, **start it
+yourself** — `npm run dev` in the background — and poll the URL until it answers. A repo the crew
+has just been installed into has never run Storybook; bringing it up is part of testing it, not a
+reason to stop. If it won't start, *that* is the finding — report it and stop.
+
+**3 · Load the browser tools in ONE call.** They're deferred, so one `ToolSearch`:
+`tabs_context_mcp`, `tabs_create_mcp`, `navigate`, `computer`, `read_page`, `find`,
+`javascript_tool`, `read_console_messages`. One at a time costs a round trip each.
+
+**4 · Open a new tab and go.** `tabs_create_mcp`, then `navigate` to the URL. A **new** tab — never
+hijack one the designer was using. Note the tab id for the card.
+
+**5 · Confirm it actually rendered** with a `screenshot` before judging anything: the sidebar lists
+stories, the canvas draws one, the console is clean. A blank canvas is a blocker, not a failed test.
+
+**6 · Resolve story ids from `<storybook-base>/index.json`.** The sidebar display name is not the
+story id — map `entries[].name` → `entries[].id`. A guessed slug returns "Couldn't find story
+matching" and reads like a broken component.
+
+**Always the designer's real browser** — `mcp__claude-in-chrome__*`, the extension attached to the
+browser they actually use. Never an in-app or headless one, and never a screenshot harness as a
+substitute. Two reasons, both load-bearing: they can *watch the test happen* and take the tab over
+the moment something looks wrong, and the render you are judging is the one their browser produces —
+their fonts, their extensions, their zoom — not a clean-room approximation of it.
+
+**Leave the tab open** when you finish. The findings point at it.
+
+## Step 3 · Build the test matrix
 
 One test case per **variant × state × size** in the Figma component set — the same matrix the
 Engineer built to. Every row gets an Airtable record, pass or fail. A row you skip is a rollup that
 lies.
 
-## Step 3 · Visual track — read computed values, never the class list
+## Step 4 · Visual track — read computed values, never the class list
 
 Compare the render against the Figma node property by property.
 
@@ -77,7 +98,7 @@ Compare the render against the Figma node property by property.
   necessarily resolve to the px its name suggests, and it can differ between component families.
   Check what it actually computes to, then compare to the Figma token.
 
-## Step 4 · Interaction track
+## Step 5 · Interaction track
 
 Disabled · Hover · Focus · Press/Tap · Keyboard navigation.
 
@@ -96,7 +117,7 @@ Disabled · Hover · Focus · Press/Tap · Keyboard navigation.
   the presence of `[role=dialog]` in the DOM — exit animations cause false readings immediately
   after Escape.
 
-## Step 5 · Accessibility track
+## Step 6 · Accessibility track
 
 - **Accessible name.** Two failure shapes, both common:
   `label[for]` pointing at an id that doesn't exist — run `document.getElementById(label.htmlFor)`
@@ -113,7 +134,7 @@ Disabled · Hover · Focus · Press/Tap · Keyboard navigation.
   for-attribute fix for these.
 - Value ARIA on library primitives is usually right; the gap is almost always the accessible name.
 
-## Step 6 · Record the results
+## Step 7 · Record the results
 
 One Airtable row per matrix row, in the **Staging Testing** table, using the column names from
 `airtable.fields` in `productive.config.json`. Passes are recorded too — `To be deployed` means
@@ -125,7 +146,7 @@ Never a raw value — name the token or prop.
 
 Mirror each failure as an Asana comment. You write records, never a status.
 
-## Step 7 · Post-session — feed what you learned back
+## Step 8 · Post-session — feed what you learned back
 
 After the run, update `governance/qa-memory.md`:
 
