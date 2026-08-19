@@ -43,12 +43,15 @@ every one of them fails later and confusingly if it is wrong now.
 
 | Check | If it fails, say exactly this |
 |---|---|
-| Airtable — `echo "${AIRTABLE_API_KEY:-unset}"` | The crew reads and writes the board with a **script**, which takes the token from the shell — pasting it at the install prompt only reaches the MCP server and never reaches the scripts. Create a personal access token at `airtable.com/create/tokens` with `data.records:read`, `data.records:write` and `schema.bases:read`, then `echo 'export AIRTABLE_API_KEY="pat…"' >> ~/.zshrc` and restart Claude Code. |
+| Airtable — `node "${CLAUDE_PLUGIN_ROOT}/scripts/credentials.js" check airtable` | No token stored. Walk them through §1.6 below — it takes a minute and only happens once. |
 | Asana — any read call | The Asana token wasn't captured at install. Asana has **no login flow here** — it needs a **personal access token** (see `developers.asana.com/docs/personal-access-token`). Reinstall and paste it, or say you're running without tickets. |
 | Figma — `whoami` | The Figma server needs an OAuth authorization, which only an interactive session can do. Send them to `/mcp`. |
 
 **A missing Asana token is a choice, not a blocker** — the crew runs without ticketing. A missing
 Airtable token is a blocker: the board is the registry.
+
+There is **no Airtable MCP server** and no Airtable install prompt. The crew reaches the board
+through `scripts/board.js`, which reads the token from `credentials.js`. One token, one place.
 
 **Never work around a missing token** by reaching for a connector the main session can see. The
 agents' tool patterns point at the plugin's servers; a connector that works for you does not work
@@ -146,6 +149,32 @@ committing the export or by CI/CD, and always lives at that exact path. Tell the
 setup: the crew builds tokens, it does not export them, because a Figma read only returns the
 variables that are *applied* and would silently miss the rest.
 
+## 1.6 · Store the Airtable token — they type it, not you
+
+**Never ask them to paste the token into this chat.** Anything typed here is in the transcript, and
+a token in a transcript has to be treated as leaked and rotated. This is the one step you hand back
+to the person.
+
+Tell them to open **Terminal** and run exactly this — substitute the real absolute path for
+`${CLAUDE_PLUGIN_ROOT}`, because their shell has no such variable:
+
+```bash
+node "<plugin-root>/scripts/credentials.js" store airtable
+```
+
+It prompts, the typing is hidden, and it writes `~/.claude/productive-crew/credentials.json` with
+owner-only permissions. Nothing else is needed — no `~/.zshrc`, no restart.
+
+They need a personal access token from `airtable.com/create/tokens` with **`data.records:read`,
+`data.records:write` and `schema.bases:read`** on the base. Without the schema scope, §2's check
+cannot run.
+
+Confirm it landed with `node "${CLAUDE_PLUGIN_ROOT}/scripts/credentials.js" check airtable`, which
+prints where the token came from and never the token itself. Then carry on.
+
+> Running in CI, or prefer an environment variable? `AIRTABLE_API_KEY` still works and takes
+> precedence over the file.
+
 ## 2 · Connect Airtable — you bring the base, we verify it
 
 **Do not offer to create the base.** The crew cannot reliably create an Airtable base, and offering
@@ -221,7 +250,8 @@ plugin. Claude Code also gets it injected at session start, but the file is the 
 
 - `productive.config.json` — names + the new ids. **Never a secret.**
 - `governance/registry.md` — the orchestrator's name.
-- Secrets are **not** written to this repo. Airtable and Asana tokens come from the plugin's own
+- Secrets are **not** written to this repo. The Airtable token lives in
+  `~/.claude/productive-crew/credentials.json`; the Asana token comes from the plugin's own
   config, set when the plugin was installed. If a token is missing, the MCP server will say so —
   send the user to `/plugin` to fill it in, and never ask them to paste one into a file.
 

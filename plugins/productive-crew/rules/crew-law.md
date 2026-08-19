@@ -79,7 +79,9 @@ A blocker is a card too — what broke + one thing to try.
 ## Secrets never enter the repo — and a hook enforces it
 
 Tokens live in your environment or the plugin's config. A repo file references them
-(`"${AIRTABLE_API_KEY}"`), it never contains them.
+(`"${AIRTABLE_API_KEY}"`), it never contains them. The Airtable token lives in
+`~/.claude/productive-crew/credentials.json`, owner-readable only, written by
+`scripts/credentials.js` — never typed into a chat, because a transcript is not a secret store.
 
 A PreToolUse hook blocks any Edit, Write or Bash whose content carries a credential shape. It is
 deliberately narrow — only unambiguous prefixes — because a guard that cries wolf gets switched off,

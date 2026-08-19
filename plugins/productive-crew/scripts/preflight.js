@@ -4,6 +4,7 @@
 
 import { readFileSync } from 'node:fs';
 import { projectPath } from './project.js';
+import { resolve as resolveToken, isExposed, CREDENTIALS_FILE } from './credentials.js';
 
 const PLACEHOLDERS = ['appXXXXXXXXXXXXXX', '0000000000000000', 'owner/'];
 
@@ -33,16 +34,21 @@ function main() {
   }
   if (looksUnset(cfg.repo?.slug)) problems.push('repo.slug is not set');
 
-  // Every agent reaches the board through scripts/board.js, which reads the token from the SHELL
-  // environment. Setting the plugin's airtable_token in /plugin config is not the same thing: that
-  // value is handed to the Airtable MCP server's own process and never reaches an agent's Bash.
-  // Catch it here, at the front door, rather than three steps into a run.
-  if ((cfg.board?.provider ?? 'airtable') === 'airtable' && !process.env.AIRTABLE_API_KEY && !process.env.AIRTABLE_TOKEN) {
+  // Every agent reaches the board through scripts/board.js, which needs a real token. Catch a
+  // missing one here, at the front door, rather than three steps into a run.
+  if ((cfg.board?.provider ?? 'airtable') === 'airtable' && !resolveToken('airtable')) {
     problems.push(
-      'AIRTABLE_API_KEY is not in the environment — the crew reads and writes the board with it.\n' +
-      '  Add `export AIRTABLE_API_KEY="pat…"` to ~/.zshrc and restart Claude Code.\n' +
-      '  (Setting the token in the plugin config only reaches the Airtable MCP server, not the scripts.)\n' +
+      'No Airtable token — the crew reads and writes the board with it.\n' +
+      '  Run /productive-crew:setup, which walks you through storing one in\n' +
+      `  ${CREDENTIALS_FILE} (readable only by you).\n` +
       '  To run with no Airtable at all, set "board": { "provider": "file" } in productive.config.json.'
+    );
+  }
+
+  // A credentials file the rest of the machine can read is worth one line of noise.
+  if (isExposed()) {
+    problems.push(
+      `${CREDENTIALS_FILE} is readable by other users — run \`chmod 600 "${CREDENTIALS_FILE}"\``
     );
   }
 

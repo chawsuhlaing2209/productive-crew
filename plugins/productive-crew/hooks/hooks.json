@@ -2,7 +2,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|Bash|mcp__airtable.*|mcp__asana.*",
+        "matcher": "Edit|Write|Bash|mcp__asana.*",
         "hooks": [
           {
             "type": "command",

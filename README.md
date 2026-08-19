@@ -128,28 +128,38 @@ already have a deploy — then asks you only what it couldn't work out. Expect q
 
 It only adds files you don't already have, and it never overwrites your work.
 
-### One thing setup can't do for you: the Airtable token
+### The one step you do yourself: the Airtable token
 
-The crew reads and writes your board with a script, and that script takes the token from **your
-shell**, not from the plugin's settings. Setting `airtable_token` in the plugin config only reaches
-the Airtable connector — it never reaches the crew.
+Setup will stop and ask you to do this once. It takes a minute.
 
-So do this once. In Airtable, create a [personal access token](https://airtable.com/create/tokens)
-with `data.records:read`, `data.records:write` and `schema.bases:read` on your base, then add it to
-`~/.zshrc`:
+1. Create a [personal access token](https://airtable.com/create/tokens) with
+   **`data.records:read`**, **`data.records:write`** and **`schema.bases:read`** on your base.
+2. Open **Terminal** and run the command setup gives you — it looks like this, with the real path
+   filled in:
 
-```bash
-echo 'export AIRTABLE_API_KEY="patYOURTOKENHERE"' >> ~/.zshrc
-```
+   ```bash
+   node "<plugin-root>/scripts/credentials.js" store airtable
+   ```
 
-Restart Claude Code afterwards so it picks up the change. If you skip it, every command stops at
-the front door and tells you this — nothing runs half-configured.
+3. Paste the token at the prompt. **Your typing is hidden** — that's expected, not a frozen screen.
 
-> **Never put the token in your project.** It goes in `~/.zshrc`, which is outside the repo. A file
-> in your repo may *reference* it as `"${AIRTABLE_API_KEY}"`, never contain it.
+It's saved to `~/.claude/productive-crew/credentials.json`, readable only by you. No `~/.zshrc`, no
+restart, and you never do it again.
+
+> **Why not just paste it to Claude?** Anything you type in the chat is kept in the conversation
+> transcript, and a token in a transcript has to be treated as leaked. Typing it in Terminal keeps
+> it out of both the transcript and your repo. For the same reason, if you ever *have* pasted a
+> token into a chat, [rotate it](https://airtable.com/create/tokens) — deleting the message isn't
+> enough.
+
+If you skip it, every command stops at the front door and tells you so. Nothing runs
+half-configured.
 
 Want to try the crew with no Airtable account at all? Put `"board": { "provider": "file" }` in
 `productive.config.json` and the board becomes a local file. Everything else works the same.
+
+> Running in CI, or you'd rather use an environment variable? `AIRTABLE_API_KEY` still works and
+> takes precedence over the stored file.
 
 ### "Where should the preview live?"
 

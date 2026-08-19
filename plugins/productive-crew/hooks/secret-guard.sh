@@ -47,9 +47,15 @@ for i in "${!PATTERNS[@]}"; do
     cat >&2 <<MSG
 BLOCKED — that write contains what looks like a ${NAMES[$i]}.
 
-Secrets never enter the repo. Put the value in your environment and reference it:
+Secrets never enter the repo.
 
-    "AIRTABLE_API_KEY": "\${AIRTABLE_API_KEY}"
+Store the Airtable token once, outside the repo:
+
+    node "\${CLAUDE_PLUGIN_ROOT}/scripts/credentials.js" store airtable
+
+Anything else belongs in your environment, referenced — never pasted:
+
+    "SOME_TOKEN": "\${SOME_TOKEN}"
 
 If this is a false positive, the guard is \${CLAUDE_PLUGIN_ROOT}/hooks/secret-guard.sh.
 MSG

@@ -4,7 +4,8 @@
 // MCP server happens to be connected or how its tools are named, and a credential that comes from
 // the environment rather than plugin config — the two things that made this unreliable before.
 //
-//   AIRTABLE_API_KEY   a personal access token with read+write on the base
+// The token comes from credentials.js — the environment first, then the file the install prompt
+// writes. Never from the repo.
 //
 // Field names come from `airtable.fields` in productive.config.json. Airtable matches them
 // case-sensitively and a wrong name reads as empty rather than erroring, so schemaCheck() exists
@@ -12,6 +13,7 @@
 
 import { readFileSync } from 'node:fs';
 import { projectPath } from '../project.js';
+import { resolve as resolveToken, CREDENTIALS_FILE } from '../credentials.js';
 import { deriveStatus } from '../status.js';
 import { select, isFailed, isRetest } from './repairable.js';
 
@@ -34,11 +36,12 @@ function cfg() {
 }
 
 function token() {
-  const t = process.env.AIRTABLE_API_KEY || process.env.AIRTABLE_TOKEN;
+  const t = resolveToken('airtable');
   if (!t) {
     throw new Error(
-      'AIRTABLE_API_KEY is not set. Put your Airtable personal access token in the environment — ' +
-      'never in a file in the repo.'
+      'No Airtable token. The crew looks in the AIRTABLE_API_KEY environment variable, then in ' +
+      `${CREDENTIALS_FILE}. Run /productive-crew:setup to store one. ` +
+      'Never put it in a file in the repo.'
     );
   }
   return t;
