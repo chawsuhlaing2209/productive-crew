@@ -1,7 +1,7 @@
 {
   "name": "productive-crew",
   "displayName": "Productive Crew",
-  "version": "0.26.2",
+  "version": "0.26.3",
   "description": "A design-system crew \u2014 Figma to tokens to component to tested, deployed Storybook. Agents write evidence; a script verifies it; the board derives status. Nobody types a status.",
   "author": {
     "name": "Chaw Su Hlaing",

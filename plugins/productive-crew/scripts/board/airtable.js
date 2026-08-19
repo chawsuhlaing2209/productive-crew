@@ -150,13 +150,27 @@ export async function set(name, field, value) {
  */
 const ROW_KEYS = ['case', 'result', 'expected', 'suggestion', 'variants', 'size', 'state', 'context'];
 
+/**
+ * Keys whose Airtable column is a multipleSelects in the documented schema (see
+ * governance/airtable-schema.md). Airtable rejects a bare string for those with
+ * 422 "Cannot parse value for field <name>", so a scalar is wrapped. Callers may pass an array
+ * directly — a row that is already tagged with two sizes is left alone.
+ */
+const MULTI_SELECT_KEYS = new Set(['size', 'state']);
+
 export async function testsAdd(name, rows) {
   const c = cfg();
   const tf = c.fields.stagingTesting;
+  // `Composed In` is a linked-record field, so Airtable wants an array of record ids — a bare
+  // component name is rejected with 422 INVALID_VALUE_FOR_COLUMN ("not an array of record IDs"),
+  // and the whole batch fails. Resolve the row once for the batch rather than per record.
+  const { id: componentId } = await get(name);
   const records = rows.map((row) => {
-    const fields = { [tf.component]: name };
+    const fields = { [tf.component]: [componentId] };
     for (const k of ROW_KEYS) {
-      if (row[k] !== undefined && row[k] !== null && row[k] !== '' && tf[k]) fields[tf[k]] = row[k];
+      if (row[k] !== undefined && row[k] !== null && row[k] !== '' && tf[k]) {
+        fields[tf[k]] = MULTI_SELECT_KEYS.has(k) && !Array.isArray(row[k]) ? [row[k]] : row[k];
+      }
     }
     return { fields };
   });
