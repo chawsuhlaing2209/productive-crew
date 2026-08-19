@@ -76,6 +76,18 @@ is the evidence*. Main accepts PRs from staging only, opened by DevOps with huma
 Short cards a designer can scan, one per hand-off. Say what changed, not how. Link, don't paste.
 A blocker is a card too — what broke + one thing to try.
 
+## Secrets never enter the repo — and a hook enforces it
+
+Tokens live in your environment or the plugin's config. A repo file references them
+(`"${AIRTABLE_API_KEY}"`), it never contains them.
+
+A PreToolUse hook blocks any Edit, Write or Bash whose content carries a credential shape. It is
+deliberately narrow — only unambiguous prefixes — because a guard that cries wolf gets switched off,
+and a switched-off guard protects nothing.
+
+If a secret is already committed, **rotate it**. Deleting the file does not remove it from history,
+and a token in a public repo is compromised the moment it is pushed.
+
 ## Kill switch
 
 `AGENTS_PAUSED` at the project root halts every agent before its next write. A PreToolUse hook

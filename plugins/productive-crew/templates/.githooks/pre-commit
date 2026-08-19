@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Blocks a commit that carries a credential. Enable once per clone:
+#     git config core.hooksPath .githooks
+#
+# The agents are blocked by the plugin's own hook; this is for the other path — you, pasting.
+set -uo pipefail
+staged="$(git diff --cached -U0 | grep '^+' || true)"
+[ -z "$staged" ] && exit 0
+
+if printf '%s' "$staged" | grep -qE 'pat[A-Za-z0-9]{13,}\.[A-Za-z0-9]{30,}|[0-9]/[0-9]{15,}:[A-Za-z0-9]{30,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|figd_[A-Za-z0-9_-]{30,}'; then
+  echo "BLOCKED — staged changes contain what looks like a credential." >&2
+  echo "Move it to your environment and reference it, e.g. \"\${AIRTABLE_API_KEY}\"." >&2
+  echo "If it is already committed, rotate the token — removing the file does not remove it from history." >&2
+  exit 1
+fi

@@ -6,7 +6,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "test -f \"${CLAUDE_PROJECT_DIR}/AGENTS_PAUSED\" && { echo 'AGENTS_PAUSED is set — fleet halted. Delete the file to resume.' >&2; exit 2; } || exit 0"
+            "command": "test -f \"${CLAUDE_PROJECT_DIR}/AGENTS_PAUSED\" && { echo 'AGENTS_PAUSED is set \u2014 fleet halted. Delete the file to resume.' >&2; exit 2; } || exit 0"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/secret-guard.sh"
           }
         ]
       }

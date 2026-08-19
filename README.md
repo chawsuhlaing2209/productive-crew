@@ -305,6 +305,20 @@ The crew stops rather than guessing. Most stops are one of these:
 | *Figma reads fail* | Run `/mcp` and authorize Figma. It needs a login, not a token |
 | *unbound in Figma* | A colour or spacing isn't attached to a variable. Fix it in Figma, re-export |
 
+### Keeping your tokens out of the repo
+
+Two guards, because there are two ways a token gets in.
+
+- **An agent writing one** — a hook blocks any write carrying a credential, before it happens.
+- **You pasting one** — run `git config core.hooksPath .githooks` once per clone, and a commit
+  containing a credential is refused.
+
+The rule underneath both: a file in your repo **references** a token, it never contains one.
+Put the value in your shell and write `"${AIRTABLE_API_KEY}"` in the config.
+
+> **If a token has already been committed, rotate it.** Deleting the file doesn't remove it from
+> git history, and a token pushed to a public repo should be treated as compromised.
+
 ### Stop everything
 
 Create a file called `AGENTS_PAUSED` in your project folder. Every agent halts before its next
