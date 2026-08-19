@@ -230,11 +230,11 @@ You never set these. The board works them out from what's been recorded:
 | Status | Means |
 |---|---|
 | *(empty)* | Nothing recorded yet |
-| **To-do** | It has a Figma link |
-| **To be staged** | Code is committed |
+| **To-do** | It has a Figma link and the design is marked Done |
 | **Ready for Testing** | The preview link is live |
 | **To be fixed** | At least one test failed |
-| **Fixing / Fixed** | Being re-tested |
+| **Fixing** | Some failures fixed, some still failing |
+| **Fixed** | All failures fixed — waiting on QA to re-test |
 | **To be deployed** | Everything passed |
 | **Completed** | It's in production |
 

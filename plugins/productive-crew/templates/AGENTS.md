@@ -106,8 +106,7 @@ The crew needs a **staging URL it can verify**. It does not care who produced it
 
 ## Status ladder (Airtable formula derives each)
 
-`To-do → To be staged → Ready for Testing → To be fixed / Fixing / Fixed →
-To be deployed → Completed`
+`To-do → Ready for Testing → To be fixed / Fixing / Fixed → To be deployed → Completed`
 
 Testing happens on staging only — there is no production-testing (TIP) loop. `Completed` means the
 production Storybook is deployed.

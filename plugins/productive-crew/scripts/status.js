@@ -1,52 +1,43 @@
 #!/usr/bin/env node
 // status.js — the status ladder, as a function.
 //
-// This is the crew's central invariant and until now it existed only as an Airtable formula the
-// user wrote by hand, which nothing could read or test. Here it is code: evidence in, status out.
+// The definition. Airtable's Development formula is a copy of this so the column can render;
+// board.js compares the two and reports statusDisagreement when they drift, so a wrong formula
+// is a caught error rather than a silent one.
 //
-// The Airtable formula stays — Airtable needs its own copy to show the column — but it becomes a
-// CACHE of this, not the definition. board.js compares the two and reports disagreement, so a
-// wrong formula is a caught error instead of a silent one.
-//
-// Precedence is the whole design. A failing test outranks EVERYTHING, including a shipped
-// component: a regression found after release has to be able to pull it back, or the board can
-// hide it.
+// Seven states. There is no "To be staged" — a commit alone changes nothing anyone can look at,
+// and a staging link is the first thing that does. There is no production-testing loop.
 
 export const LADDER = [
-  '',                   // nothing recorded
-  'To-do',              // a Figma link exists
-  'To be staged',       // a verified commit exists
+  '',                   // nothing recorded yet
+  'To-do',              // Figma link exists AND the design is marked Done
   'Ready for Testing',  // a staging Storybook link exists
-  'To be fixed',        // a staging test case Failed
-  'Fixing',             // a re-test is under way — some cases still awaiting a re-run
-  'Fixed',              // every re-tested case is done, none left awaiting
+  'To be fixed',        // at least one staging case Failed
+  'Fixing',             // some failures fixed, some still failing
+  'Fixed',              // every failure now marked Fixed (To re-test), awaiting QA
   'To be deployed',     // every staging case Passed
-  'Completed',          // a production Storybook link exists
+  'Completed',          // a verified production Storybook link exists
 ];
 
 /**
- * @param {object} c            the component's evidence
- * @param {Array<{result:string}>} tests  its staging test rows
+ * @param {object} c  evidence: { figma, design, staging, production }
+ * @param {Array<{result:string}>} tests  the component's Staging Testing rows
  */
 export function deriveStatus(c, tests = []) {
-  const total = tests.length;
-  const passed = tests.filter((t) => t.result === 'Passed').length;
-  const failed = tests.filter((t) => t.result === 'Failed').length;
-  const refix = tests.filter((t) => t.result === 'Fixed (To re-test)').length;
+  const has = (r) => tests.some((t) => t.result === r);
+  const failed = has('Failed');
+  const refix = has('Fixed (To re-test)');
 
-  // A failure outranks everything, Completed included. This ordering is the rule.
-  if (failed > 0) return 'To be fixed';
+  // The repair loop comes first, because a failure has to outrank everything — including a
+  // shipped component. A regression logged after release must be able to pull it back, or the
+  // board can hide it.
+  if (failed && refix) return 'Fixing';   // part-repaired: some fixed, some still failing
+  if (failed) return 'To be fixed';       // nothing repaired yet
+  if (refix) return 'Fixed';              // all repaired, waiting on QA to re-test
 
-  // Mid-repair: something has been fixed and is waiting to be proven again.
-  // 'Fixed' once nothing else is still unrecorded; 'Fixing' while cases remain.
-  if (refix > 0) return passed + refix === total ? 'Fixed' : 'Fixing';
-
-  // Every case Passed — note this requires ALL of them, not merely one. A row created
-  // without a result is why: `some passed and none failed` is not the same as `all passed`.
-  if (c.production) return 'Completed';
-  if (total > 0 && passed === total) return 'To be deployed';
+  if (c.production) return 'Completed';   // the link is only written after the PM verifies it
+  if (tests.length > 0) return 'To be deployed';  // rows exist, none failing, none awaiting re-test
   if (c.staging) return 'Ready for Testing';
-  if (c.commit) return 'To be staged';
-  if (c.figma) return 'To-do';
+  if (c.figma && c.design === 'Done') return 'To-do';
   return '';
 }

@@ -26,8 +26,8 @@ Never after the work, never "we'll log it once it's done".
 
 ### Path 2 · The scheduled sweep
 Read the **Components** table and treat the board as the backlog. **Any row whose `Development` is
-anything other than `Completed` is open work** — blank, `To-do`, `To be staged`,
-`Ready for Testing`, `To be fixed`, `Fixing`, `Fixed`, `To be deployed`. Each needs a ticket:
+anything other than `Completed` is open work** — blank, `To-do`, `Ready for Testing`,
+`To be fixed`, `Fixing`, `Fixed`, `To be deployed`. Each needs a ticket:
 create what's missing, move what changed, close what's finished.
 
 A component sitting at `To be fixed` with no ticket is precisely the failure this path exists to

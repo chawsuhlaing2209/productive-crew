@@ -42,45 +42,51 @@ them — tokens live in code.
 
 ## The Development formula
 
-This is the one rule the whole crew depends on, so it is worth getting exactly right.
-
-**Precedence matters more than the values.** A failing test must outrank *everything*, including a
-shipped component — otherwise a regression found after release is invisible.
-
-> **Do not count with a `count` field.** Airtable's `count` counts *linked records* — it cannot
-> filter by result. A field called `Staging Passed Count` built as a `count` returns the same
-> number as `Total Staging Tests`, always, and a formula comparing the two is permanently true.
-> Count passed rows with a **rollup** over `Testing Results`, or read the results summary as below.
+Paste this into the `Development` field. It uses field names, so it is editable — swap a name if
+yours differs. It matches `scripts/status.js` exactly; if you change one, change the other, or
+`board.js` will report the disagreement (which is the point).
 
 ```
 IF(
-  AND({Total Staging Tests} > 0, FIND("Failed", {Staging Testing Results Summary} & "") > 0),
+  AND(FIND("Failed", {Staging Testing Results Summary} & "") > 0,
+      FIND("Fixed (To re-test)", {Staging Testing Results Summary} & "") > 0),
+  "Fixing",
+IF(
+  FIND("Failed", {Staging Testing Results Summary} & "") > 0,
   "To be fixed",
 IF(
-  AND({Total Staging Tests} > 0, FIND("Fixed (To re-test)", {Staging Testing Results Summary} & "") > 0),
-  IF(FIND("Passed", {Staging Testing Results Summary} & "") = 0, "Fixed", "Fixing"),
+  FIND("Fixed (To re-test)", {Staging Testing Results Summary} & "") > 0,
+  "Fixed",
 IF({Production Storybook}, "Completed",
-IF({Staging Passed Rollup} = {Total Staging Tests}, "To be deployed",
+IF({Total Staging Tests} > 0, "To be deployed",
 IF({Staging Storybook}, "Ready for Testing",
-IF({Commit}, "To be staged",
-IF({Figma}, "To-do", "")))))))
+IF(AND({Figma}, {Design} = "Done"), "To-do",
+"")))))))
 ```
 
-`{Staging Passed Rollup}` must be a **rollup** counting only rows whose `Testing Results` is
-`Passed` — not a `count`.
+**Order is the design, not style.** The three repair branches come first so a `Failed` row outranks
+everything — including `Completed`. A regression logged after release has to be able to pull a
+shipped component back, and the moment `Completed` is checked earlier, it cannot.
 
-**Why `= {Total Staging Tests}` and not `FIND("Passed", …) > 0`:** a test row created without a
-result yet is counted in the total, contributes no "Failed", and leaves at least one "Passed" in the
-summary. The looser test then reads **To be deployed** for a component whose testing is still
-half-recorded. Requiring every row to have passed is the difference between "nothing has failed" and
-"everything has passed".
+**`Development` must never be writable.** If an agent can set it, "evidence in, status out" is
+decoration.
 
-Treat that as a **starting point, not a drop-in** — your rollup fields may be named differently, and
-the `Fixing / Fixed` rungs need a rule for `Fixed (To re-test)` rows that depends on how you count
-them. Adapt it, then prove it with the test below.
+### One hole worth knowing about
 
-**Never make Development writable.** If an agent can set it, the entire "evidence in, status out"
-design is decoration.
+`To be deployed` fires when rows exist and none are `Failed` or `Fixed (To re-test)`. A row created
+**before its result is filled in** satisfies that — so a half-recorded component can read ready to
+ship.
+
+Close it by adding a rollup that counts only `Passed` rows and requiring every row to have passed:
+
+```
+IF({Staging Passed Rollup} = {Total Staging Tests}, "To be deployed", "Ready for Testing")
+```
+
+> **Don't build that with a `count` field.** Airtable's `count` counts *linked records* and cannot
+> filter by result, so a `count` named "Staging Passed Count" returns the same number as
+> `Total Staging Tests` and any comparison between them is permanently true. It has to be a
+> **rollup** over `Testing Results`.
 
 ## Prove the formula before you trust it
 
