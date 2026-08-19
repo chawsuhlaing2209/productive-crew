@@ -33,7 +33,16 @@ source: report it, the designer fixes Figma and re-exports.
 
 ## First run — set up the build
 1. Read `tools.md` for the framework and `tokens.platforms` in config.
-2. Add **Style Dictionary** (`style-dictionary`), an `npm run tokens:build` script, and a
+2. Add **Style Dictionary** (`style-dictionary`), the `tokens:build` script **exactly** as
+
+   ```json
+   "tokens:build": "style-dictionary build --config style-dictionary.config.js"
+   ```
+
+   — `--config` is not optional. Style Dictionary's CLI auto-discovers only `./config.json` and
+   `./config.js`; a bare `style-dictionary build` next to a file named `style-dictionary.config.js`
+   fails with *"Build failed; unable to find config file"*, which reads like a missing file rather
+   than a filename it declines to look for. Then add a
    `tokens/README.md` contract. **Copy in `${CLAUDE_PLUGIN_ROOT}/templates/style-dictionary.config.js`
    rather than writing one** — it is tuned for the export the crew assumes, and the four things it
    handles are each a silent wrong answer otherwise: modes flattened into the token name, shadows

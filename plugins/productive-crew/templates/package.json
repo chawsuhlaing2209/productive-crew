@@ -11,6 +11,7 @@
     "screenshots": "test-storybook --url http://127.0.0.1:6006",
     "test": "vitest run",
     "test-storybook": "test-storybook",
+    "tokens:build": "style-dictionary build --config style-dictionary.config.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@storybook/test-runner": "^0.19.0",
     "@testing-library/react": "^16.0.0",
     "playwright": "^1.47.0",
+    "style-dictionary": "^4.3.0",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
   },

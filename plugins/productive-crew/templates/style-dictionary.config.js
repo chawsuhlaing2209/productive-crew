@@ -1,6 +1,15 @@
 /**
  * Style Dictionary — turns tokens/tokens.json into the CSS and JS your components use.
  *
+ * Build it with `npm run tokens:build`, which passes this file explicitly:
+ *
+ *     style-dictionary build --config style-dictionary.config.js
+ *
+ * The `--config` is required. Style Dictionary's CLI auto-discovers only `./config.json` and
+ * `./config.js`, so a bare `style-dictionary build` sitting right next to this file fails with
+ * "Build failed; unable to find config file" — which reads like the file is missing rather than
+ * like a name the CLI declines to look for.
+ *
  * You should not need to edit this. It is tuned for the export produced by the Figma
  * community plugin "Design Tokens" (org.lukasoppermann.figmaDesignTokens), which is what
  * /productive-crew:setup assumes. Change it only if you export from something else.

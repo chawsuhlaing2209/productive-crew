@@ -592,6 +592,7 @@ The crew stops rather than guessing. Most stops are one of these:
 | *not set up* | Run `/productive-crew:setup` |
 | *no Airtable token* | Step 3 — the Terminal command. Pasting it into the plugin settings doesn't reach the crew |
 | *tokens not built* | Export from Figma to `tokens/tokens.json`, then `/productive-crew:tokens` |
+| *Build failed; unable to find config file* | Style Dictionary's CLI only looks for `config.json` / `config.js`. Your `tokens:build` script needs `--config style-dictionary.config.js` |
 | *no ticket* | Start with `/productive-crew:build`, not by calling an agent directly |
 | *no preview link* | The component hasn't been published yet — build it first |
 | *config expects "X", base has "x"* | Airtable is case-sensitive. Rename either side |
