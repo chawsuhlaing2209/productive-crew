@@ -13,6 +13,7 @@
 import { readFileSync } from 'node:fs';
 import { projectPath } from '../project.js';
 import { deriveStatus } from '../status.js';
+import { select, isFailed, isRetest } from './repairable.js';
 
 const API = 'https://api.airtable.com/v0';
 
@@ -77,6 +78,7 @@ async function testsFor(name) {
     `?filterByFormula=${encodeURIComponent(`{${tf.component}}='${esc(name)}'`)}`;
   const { records } = await api(url);
   return records.map((r) => ({
+    id: r.id,
     case: r.fields[tf.case] ?? null,
     result: r.fields[tf.result] ?? null,
     expected: r.fields[tf.expected] ?? null,
@@ -145,6 +147,28 @@ export async function testsAdd(name, row) {
     body: JSON.stringify({ records: [{ fields }] }),
   });
   return { ok: true, added: 1 };
+}
+
+/** PATCH, never POST — see repairable.js for why appending breaks the ladder. */
+async function transition(name, caseName, picker, result) {
+  const c = cfg();
+  const tf = c.fields.stagingTesting;
+  const targets = select(await testsFor(name), caseName, name, picker);
+  await api(encodeURIComponent(c.tables.stagingTesting), {
+    method: 'PATCH',
+    body: JSON.stringify({
+      records: targets.map((t) => ({ id: t.id, fields: { [tf.result]: result } })),
+    }),
+  });
+  return { ok: true, changed: targets.length, cases: targets.map((t) => t.case ?? null), result };
+}
+
+export async function testsFix(name, caseName, { commit, label }) {
+  return { ...(await transition(name, caseName, { match: isFailed, wanted: 'Failed' }, label)), commit };
+}
+
+export async function testsRetest(name, caseName, result) {
+  return transition(name, caseName, { match: isRetest, wanted: 'awaiting re-test' }, result);
 }
 
 export async function testsList(name) {

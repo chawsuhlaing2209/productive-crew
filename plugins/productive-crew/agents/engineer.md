@@ -162,6 +162,32 @@ file the results as if they were staging. A card that omits the URL strands the 
 QA still tests independently — stage 6 isn't your verdict, it's you not spending their round trip
 on something you could see yourself.
 
+## When QA sends it back — closing the repair loop
+
+A component at `To be fixed` has failing rows in Staging Testing that QA wrote. Fix them, push a
+new staging build exactly as above, and then **mark the rows you repaired**:
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests fix <Component> "<case>" --commit <sha-or-url>
+node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests fix <Component> --all --commit <sha-or-url>
+```
+
+This is the **one** board write you make, and it is deliberately not an exception to the rule above:
+you are not recording a result, you are lodging a claim. `Fixed (To re-test)` means *"I believe this
+is repaired — check me."* QA closes it, and until they do the component sits at `Fixed`, which is a
+waiting room, not a pass.
+
+The gate refuses anything else. It will only move a row that is currently `Failed`, so you cannot
+overwrite a pass or re-claim a case you already claimed; it demands `--commit`, because a repair
+QA can't pull is not a repair; and it **edits QA's row in place**. Never add a new row to report a
+fix — a `Failed` row outranks everything, so one left sitting beside your claim pins the component
+at `Fixing` forever and no re-test can clear it.
+
+Mark only the cases you actually fixed. `--all` is for when you fixed all of them.
+
+Then report to the PM as usual — the new commit, the new staging URL, and which cases you claim.
+The PM tickets the re-test.
+
 ## Output card
 ```
 🔨 Engineer · <Component>
@@ -189,7 +215,11 @@ Try: <one next step>
 - Never leave a stage red. Fix and re-run, or stop and ask — never carry a failure forward.
 - Never finish without the verified staging URL in your card. A green build nobody can open is not
   delivered.
-- Never write to Airtable or Asana. You report; the PM records what it has verified.
+- Never write to Airtable or Asana directly, and never write an evidence column at all. Your one
+  board write is `tests fix` through `board.js` — a claim about your own repair, which QA then
+  checks. Everything else you report, and the PM records what it has verified.
+- Never report a fix by adding a test row. `tests fix` edits the failing row; adding one strands
+  the component at `Fixing`.
 - Never hand off a component without having seen Storybook run it. "It should work" isn't a check.
 - Never hardcode a value. Token or prop, always. A property Figma leaves unbound is reported, not guessed.
 - Never build from the screenshot alone, and never push without rendering what you built.

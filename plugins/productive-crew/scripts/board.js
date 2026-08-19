@@ -5,6 +5,8 @@
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" list [--status "<status>"]
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" set <Component> <field> <value>
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests add <Component> '<json>'
+//   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests fix <Component> <case|--all> --commit <sha>
+//   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests retest <Component> <case|--all> <Passed|Failed>
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests list <Component>
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" schema check
 //
@@ -32,6 +34,16 @@ function config() {
   } catch {
     fail('productive.config.json is missing or invalid — run /productive-crew:setup');
   }
+}
+
+/**
+ * The exact cell value that marks a repaired case. Read from config so a base that spells the
+ * option differently still gets a WRITABLE value — status.js can match "re-test" loosely, but a
+ * write has to hit a real singleSelect choice or Airtable rejects it.
+ */
+function refixLabel(cfg) {
+  const choices = cfg.airtable?.choices?.result ?? [];
+  return choices.find((c) => /re-?test/i.test(c)) ?? 'Fixed (To re-test)';
 }
 
 async function provider() {
@@ -80,6 +92,45 @@ async function main() {
         if (!name) fail('usage: board.js tests list <Component>');
         return out(await b.testsList(name));
       }
+      if (sub === 'fix') {
+        // Marks an EXISTING failed row repaired. Never appends: "Fixing" means *some failures
+        // remain*, so adding a second row beside the Failed one would pin the component there
+        // forever and no re-test could ever clear it.
+        const target = rest[2];
+        const ci = rest.indexOf('--commit');
+        const commit = ci !== -1 ? rest[ci + 1] : undefined;
+        if (!name || !target) {
+          fail(`usage: board.js tests fix <Component> <case|--all> --commit <sha-or-url>`);
+        }
+        if (!commit) {
+          fail(
+            'refused: a repair needs --commit <sha-or-url>. "Fixed" is a claim about a pushed ' +
+            'build that QA can re-test, not about your working copy.'
+          );
+        }
+        if (!(await verify('commit', commit, { op: 'tests.fix', component: name, case: target }))) {
+          fail(`refused: commit did not verify — ${commit}`);
+        }
+        return out(
+          await b.testsFix(name, target === '--all' ? null : target, {
+            commit,
+            label: refixLabel(config()),
+          })
+        );
+      }
+      if (sub === 'retest') {
+        // QA closing a repair. Only a row awaiting re-test can be closed this way — a first pass
+        // over the matrix is `tests add`, and conflating the two lets a re-test invent a case
+        // nobody ever failed.
+        const [target, result] = rest.slice(2);
+        if (!name || !target || !result) {
+          fail('usage: board.js tests retest <Component> <case|--all> <Passed|Failed>');
+        }
+        if (result !== 'Passed' && result !== 'Failed') {
+          fail(`refused: a re-test closes with Passed or Failed, not "${result}"`);
+        }
+        return out(await b.testsRetest(name, target === '--all' ? null : target, result));
+      }
       if (sub === 'add') {
         if (!name || !json) fail(`usage: board.js tests add <Component> '<json>'`);
         let row;
@@ -87,7 +138,7 @@ async function main() {
         if (!row.result) fail('a test row needs a "result" — Passed, Failed, or Fixed (To re-test)');
         return out(await b.testsAdd(name, row));
       }
-      return fail('usage: board.js tests <add|list> …');
+      return fail('usage: board.js tests <add|fix|retest|list> …');
     }
 
     case 'schema':

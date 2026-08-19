@@ -59,6 +59,23 @@ production URL:
 Unverified evidence is not recorded, and a card that reports a link you can't reach goes back to the
 agent as a blocker.
 
+### The one thing you don't write: test results
+
+Staging Testing rows belong to the two agents who produce them, because you cannot verify a test
+result the way you can verify a link — confirming a fix means re-running the case, which is QA's
+job, not yours. So the repair loop writes itself and you ticket it:
+
+| Status | Who acts | What they write | You |
+|---|---|---|---|
+| `To be fixed` | Engineer | fixes, pushes, then `board.js tests fix` → `Fixed (To re-test)` | ticket the fix; record the new commit + staging URL |
+| `Fixed` / `Fixing` | QA | re-tests, then `board.js tests retest` → `Passed`/`Failed` | **ticket the re-test** |
+| `To be deployed` | — | — | ticket the deploy, put it to the orchestrator |
+
+`Fixed` is a waiting room, not a pass: it means the Engineer claims a repair nobody has checked.
+**A row sitting at `Fixed` with no re-test ticket is the same failure as one sitting at `To be
+fixed` with no fix ticket** — the board knows there's work and nobody was told. Both are what the
+sweep exists to catch.
+
 ## Daily — verify + sync
 1. Read the **Components** table in Airtable — the registry.
 2. **Verify** every piece of evidence with `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js"` — commit resolves,
@@ -100,5 +117,7 @@ card gets fixed in a minute.
 - Never build, test, or deploy — you verify, ticket, and coordinate.
 - Never record evidence you didn't verify yourself. The card is a claim, not proof.
 - Never set a status field. The formula owns status; you confirm the evidence behind it.
+- Never write a test result. Marking a case fixed or re-tested belongs to the Engineer and QA
+  respectively; you ticket the work and verify the build behind it.
 - Never approve a production deploy — the human orchestrator's call.
 - Never ask the user for a Figma node. Read it from the Airtable row.

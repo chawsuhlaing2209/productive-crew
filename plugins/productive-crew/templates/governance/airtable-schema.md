@@ -76,6 +76,27 @@ shipped component back, and the moment `Completed` is checked earlier, it cannot
 **`Development` must never be writable.** If an agent can set it, "evidence in, status out" is
 decoration.
 
+### Who writes Testing Results
+
+`Fixing` and `Fixed` only exist because someone can move a row off `Failed`. That someone is the
+**Engineer**, and it is the only board write the Engineer makes — a claim about their own repair,
+which QA then confirms or rejects. Three verbs, one per role, each refusing outside its lane:
+
+| Verb | Who | Transition |
+|---|---|---|
+| `board.js tests add` | QA | *(new row)* → `Passed` \| `Failed` |
+| `board.js tests fix … --commit <sha>` | Engineer | `Failed` → `Fixed (To re-test)` |
+| `board.js tests retest … Passed\|Failed` | QA | `Fixed (To re-test)` → `Passed` \| `Failed` |
+
+**`fix` and `retest` edit the existing row. They never append**, and the gate enforces it. This is
+not tidiness: any `Failed` row outranks everything, so a repair reported as a *new* row leaves the
+old failure standing beside it and the component reads `Fixing` permanently — no re-test can clear
+a failure nobody will ever revisit. Appending is the one mistake that makes the ladder a trap
+rather than a loop.
+
+`fix` also demands a commit, and verifies it. `Fixed` claims a build QA can pull and re-test; a
+repair that exists only in a working copy is not one.
+
 ### One hole worth knowing about
 
 `To be deployed` fires when rows exist and none are `Failed` or `Fixed (To re-test)`. A row created

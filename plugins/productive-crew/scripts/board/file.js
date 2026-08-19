@@ -9,6 +9,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { projectPath } from '../project.js';
 import { deriveStatus } from '../status.js';
+import { select, isFailed, isRetest } from './repairable.js';
 
 const FILE = () => projectPath('.crew', 'board.json');
 
@@ -59,6 +60,33 @@ export async function testsAdd(name, row) {
   db.tests.push({ component: name, ...row });
   save(db);
   return { ok: true, added: 1 };
+}
+
+/** Mutating the rows in place is the whole point — see repairable.js. */
+function transition(name, caseName, picker, apply) {
+  const db = load();
+  if (!db.components.some((x) => x.name === name)) {
+    throw new Error(`no component "${name}" on the board`);
+  }
+  const targets = select(db.tests.filter((t) => t.component === name), caseName, name, picker);
+  targets.forEach(apply);
+  save(db);
+  return { ok: true, changed: targets.length, cases: targets.map((t) => t.case ?? null) };
+}
+
+export async function testsFix(name, caseName, { commit, label }) {
+  const r = transition(name, caseName, { match: isFailed, wanted: 'Failed' }, (t) => {
+    t.result = label;
+    t.fixedIn = commit;
+  });
+  return { ...r, result: label, commit };
+}
+
+export async function testsRetest(name, caseName, result) {
+  const r = transition(name, caseName, { match: isRetest, wanted: 'awaiting re-test' }, (t) => {
+    t.result = result;
+  });
+  return { ...r, result };
 }
 
 export async function testsList(name) {
