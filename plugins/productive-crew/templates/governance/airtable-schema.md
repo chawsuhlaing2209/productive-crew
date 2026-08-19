@@ -18,13 +18,15 @@ Every table and column name is **Title Case**.
 | Components | single line (primary) | you, when registering |
 | Category | single select | you |
 | Figma | URL | you — the node the Engineer builds from |
+| Design | single select: `Not started` · `In progress` · `Done` | you — this is the gate that starts the work |
 | Commit | URL | 🧭 PM, after verifying |
 | Staging Storybook | URL | 🧭 PM, after verifying |
 | Production Storybook | URL | 🧭 PM, after verifying |
 | Astro Link | URL | 🧭 PM |
 | [Staging] Test Records | link → Staging Testing | Airtable, via the link |
+| **Staging Testing Results Summary** | **rollup** over `[Staging] Test Records` → `Testing Results`, `ARRAYJOIN(values)` | Airtable |
 | Total Staging Tests | rollup — count of linked rows | Airtable |
-| Staging Passed Count | rollup — linked rows where result is Passed | Airtable |
+| Staging Passed Count | rollup over `Testing Results` — linked rows where the result is Passed | Airtable |
 | **Development** | **formula** — see below | **nobody. Ever.** |
 
 **Staging Testing** — one row per variant × state × size
@@ -36,9 +38,19 @@ Every table and column name is **Title Case**.
 | Attachment | attachment |
 | Suggestion for Improvement | long text |
 | Composed In | link → Components |
+| Variants | single select — the variant under test, e.g. `Primary` |
+| Size | single select — e.g. `sm` · `md` · `lg` |
+| State | single select — e.g. `default` · `hover` · `focus` · `disabled` |
+| Context | single line text — browser and viewport, e.g. `Chrome 141 · 1440×900` |
 
-**Base Tokens** and **Semantic Tokens** are optional and hand-maintained. No agent reads or writes
-them — tokens live in code.
+**Variants, Size and State are their own columns, not part of the case name.** They are what makes
+the board sliceable — "every hover state that failed", "everything at `sm`" — and a row that folds
+them into `Button/Primary hover sm` answers none of those questions.
+
+**Two tables, and only two.** Tokens live in code — built from `tokens/tokens.json` by Style
+Dictionary and checked by `scripts/token-check.js` — so there are no token tables here. If your base
+has some from an earlier setup, leave them: the crew doesn't read them, and `schema check` no longer
+asks for them.
 
 ## The Development formula
 
@@ -58,7 +70,7 @@ IF(
   FIND("re-test", {Staging Testing Results Summary} & "") > 0,
   "Fixed",
 IF({Production Storybook}, "Completed",
-IF({Total Staging Tests} > 0, "To be deployed",
+IF({Staging Testing Results Summary} != "", "To be deployed",
 IF({Staging Storybook}, "Ready for Testing",
 IF(AND({Figma}, {Design} = "Done"), "To-do",
 "")))))))
@@ -99,14 +111,14 @@ repair that exists only in a working copy is not one.
 
 ### One hole worth knowing about
 
-`To be deployed` fires when rows exist and none are `Failed` or `Fixed (To re-test)`. A row created
+`To be deployed` fires when the summary is non-empty and holds no `Failed` or `re-test`. A row created
 **before its result is filled in** satisfies that — so a half-recorded component can read ready to
 ship.
 
 Close it by adding a rollup that counts only `Passed` rows and requiring every row to have passed:
 
 ```
-IF({Staging Passed Rollup} = {Total Staging Tests}, "To be deployed", "Ready for Testing")
+IF({Staging Passed Count} = {Total Staging Tests}, "To be deployed", "Ready for Testing")
 ```
 
 > **Don't build that with a `count` field.** Airtable's `count` counts *linked records* and cannot

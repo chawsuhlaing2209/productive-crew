@@ -65,6 +65,7 @@ function toComponent(rec, f) {
     id: rec.id,
     name: v('name'),
     figma: v('figma'),
+    design: v('design'),
     commit: v('commit'),
     staging: v('staging'),
     production: v('production'),

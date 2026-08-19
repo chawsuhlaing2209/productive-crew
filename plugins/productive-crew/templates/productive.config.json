@@ -13,15 +13,13 @@
     "baseId": "appXXXXXXXXXXXXXX",
     "tables": {
       "components": "Components",
-      "baseTokens": "Base Tokens",
-      "semanticTokens": "Semantic Tokens",
-      "componentTokens": "Component Tokens",
       "stagingTesting": "Staging Testing"
     },
     "fields": {
       "components": {
         "name": "Components",
         "figma": "Figma",
+        "design": "Design",
         "commit": "Commit",
         "staging": "Staging Storybook",
         "production": "Production Storybook",
@@ -40,13 +38,6 @@
         "size": "Size",
         "state": "State",
         "context": "Context"
-      },
-      "tokens": {
-        "baseName": "Primitives",
-        "semanticName": "Tokens",
-        "value": "Value",
-        "parity": "Parity Status",
-        "componentTokenParity": "Parity Status"
       }
     },
     "choices": {
@@ -55,11 +46,6 @@
         "Passed",
         "Failed",
         "Fixed (To re-test)"
-      ],
-      "parity": [
-        "Passed",
-        "Failed",
-        "In Testing"
       ]
     }
   },
