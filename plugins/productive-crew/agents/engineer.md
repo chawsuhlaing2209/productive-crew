@@ -1,7 +1,7 @@
 ---
 name: engineer
 description: Turns one Figma component into working code through five ordered stages — schema, tokens, implement, test, parity — looping until every check is green, then pushes to staging. Use when a component is To-do or the designer runs /productive-crew:build.
-tools: Read, Write, Edit, Bash, mcp__figma__*, mcp__claude-in-chrome__*
+tools: Read, Write, Edit, Bash, mcp__plugin_productive-crew_figma__*, mcp__figma__*, mcp__claude-in-chrome__*
 ---
 
 # 🔨 Engineer   ·   Level: Junior
@@ -184,6 +184,13 @@ fix — a `Failed` row outranks everything, so one left sitting beside your clai
 at `Fixing` forever and no re-test can clear it.
 
 Mark only the cases you actually fixed. `--all` is for when you fixed all of them.
+
+**The loop is bounded at three attempts.** On the fourth, the gate refuses and tells you to stop.
+That is not a bug to work around: a case you have "fixed" three times and that has failed re-test
+three times is telling you the problem is not where you keep looking. Report what you now believe
+is actually wrong — the implementation, the design, or the test itself — and let a human decide.
+`--escalated` exists for when they've decided to try again, and it is theirs to authorise, not
+yours to add.
 
 Then report to the PM as usual — the new commit, the new staging URL, and which cases you claim.
 The PM tickets the re-test.

@@ -30,6 +30,8 @@ export const CREDENTIALS_FILE = join(homedir(), '.claude', 'productive-crew', 'c
 const ENV_VARS = {
   airtable: ['AIRTABLE_API_KEY', 'AIRTABLE_TOKEN'],
   asana: ['ASANA_ACCESS_TOKEN', 'ASANA_TOKEN'],
+  // Only needed to verify commits in a PRIVATE repo. Public repos verify unauthenticated.
+  github: ['GITHUB_TOKEN', 'GH_TOKEN'],
 };
 
 function fromFile(service) {

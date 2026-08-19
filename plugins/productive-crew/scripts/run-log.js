@@ -40,6 +40,18 @@ export function record(kind, data = {}) {
   return entry;
 }
 
+/** Every recorded run of `kind`, oldest first. Empty when nothing has run. */
+export function history(kind) {
+  const file = join(RUNS_DIR(), `${kind}.jsonl`);
+  if (!existsSync(file)) return [];
+  return readFileSync(file, 'utf8')
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .map((l) => { try { return JSON.parse(l); } catch { return null; } })
+    .filter(Boolean);
+}
+
 /** The most recent run of `kind`, or null. */
 export function last(kind) {
   const file = join(RUNS_DIR(), `${kind}.jsonl`);

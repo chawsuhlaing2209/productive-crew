@@ -28,6 +28,7 @@
 import { readFileSync } from 'node:fs';
 import { projectPath } from './project.js';
 import { verify } from './verify.js';
+import { record, history } from './run-log.js';
 
 // Only these may ever be written, and only after verifying. Everything else is refused —
 // `Development` above all, which is derived and belongs to the formula.
@@ -117,12 +118,33 @@ async function main() {
         if (!(await verify('commit', commit, { op: 'tests.fix', component: name, case: target }))) {
           fail(`refused: commit did not verify — ${commit}`);
         }
-        return out(
-          await b.testsFix(name, target === '--all' ? null : target, {
-            commit,
-            label: refixLabel(config()),
-          })
-        );
+
+        // Bound the loop. A case that has been claimed fixed three times and failed re-test each
+        // time is not a case that needs a fourth attempt — it needs a person to decide whether the
+        // design is wrong, the requirement is wrong, or it should be dropped. Left unbounded, QA
+        // and the Engineer will trade the same case indefinitely and the board reads "in progress"
+        // the entire time.
+        const priorAttempts = history('fix').filter(
+          (r) => r.component === name && (target === '--all' || r.case === target)
+        ).length;
+        if (priorAttempts >= 3 && !rest.includes('--escalated')) {
+          fail(
+            `refused: ${target === '--all' ? name : `"${target}"`} has been claimed fixed ` +
+            `${priorAttempts} times already and failed re-test each time. Stop and escalate: ` +
+            'raise it with the orchestrator, and say what you now think is actually wrong — the ' +
+            'implementation, the design, or the test. Re-run with --escalated once a human has ' +
+            'agreed to another attempt.'
+          );
+        }
+
+        const result = await b.testsFix(name, target === '--all' ? null : target, {
+          commit,
+          label: refixLabel(config()),
+        });
+        for (const c of result.cases) {
+          record('fix', { component: name, case: c, commit, attempt: priorAttempts + 1 });
+        }
+        return out({ ...result, attempt: priorAttempts + 1 });
       }
       if (sub === 'retest') {
         // QA closing a repair. Only a row awaiting re-test can be closed this way — a first pass

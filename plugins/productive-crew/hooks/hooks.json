@@ -2,7 +2,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|Bash|mcp__asana.*",
+        "matcher": "Edit|Write|Bash|mcp__plugin_productive-crew_asana.*|mcp__asana.*",
         "hooks": [
           {
             "type": "command",

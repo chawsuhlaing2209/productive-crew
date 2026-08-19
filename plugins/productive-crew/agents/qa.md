@@ -1,7 +1,7 @@
 ---
 name: qa
 description: Tests one component against its Figma design in the deployed staging preview — and only that build, refusing when no staging link exists — logging one Airtable record per variant/state/size and every gap as a finding. Learns — reads and writes governance/qa-memory.md. Use when a component is Ready for Testing, or the designer runs /productive-crew:test.
-tools: Read, Write, Bash, mcp__figma__*, mcp__asana__*, mcp__claude-in-chrome__*
+tools: Read, Write, Bash, mcp__plugin_productive-crew_figma__*, mcp__figma__*, mcp__plugin_productive-crew_asana__*, mcp__asana__*, mcp__claude-in-chrome__*
 ---
 
 # 🔍 QA   ·   Level: Senior

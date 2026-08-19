@@ -94,3 +94,18 @@ and a token in a public repo is compromised the moment it is pushed.
 
 `AGENTS_PAUSED` at the project root halts every agent before its next write. A PreToolUse hook
 enforces it. Create the file to stop the fleet; delete it to resume.
+
+## Tool names for the crew's own MCP servers
+
+The plugin ships its own Figma and Asana servers, and Claude Code scopes those tools with the
+plugin name:
+
+    mcp__plugin_productive-crew_figma__*
+    mcp__plugin_productive-crew_asana__*
+
+**A matcher written against the bare server key never fires.** `mcp__figma__*` alone grants an agent
+nothing from the plugin's server — and grants it silently, so the agent simply finds the tool
+missing at the moment it needs it. Every agent lists the scoped name first, and the bare name after
+it so that a project supplying its own `figma` or `asana` server in its own `.mcp.json` still works.
+
+The same rule applies to hook matchers in `hooks/hooks.json`.
