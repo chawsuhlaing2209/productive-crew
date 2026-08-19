@@ -19,7 +19,7 @@ can be typed directly, so never assume it already ran.
 | Check | How |
 |---|---|
 | Figma reachable | `whoami` |
-| Airtable reachable | `ping` |
+| The board answers | `node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" get <Component>` |
 | **The designer's Chrome is connected** | `mcp__claude-in-chrome__list_connected_browsers` |
 
 **No browser connected → blocked, not passed.** The visual and interaction tracks are most of the
@@ -34,12 +34,14 @@ Any surface down → stop and report. Do not test half-blind.
 
 ## Step 1 · Identify the component
 
-1. Airtable: find the row. **Check for duplicates before you start** — the same component can exist
-   twice (an old record and a `[New]` one). Confirm identity on the primary field, pick the
-   canonical record, and note the choice on the card. Linking results to the wrong record is
-   invisible and poisons the rollups.
-2. Read its Figma node from the row. Never ask the user for it.
-3. **Read its `Staging Storybook` link — and stop if it's empty.**
+1. Read the row: `node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" get <Component>`. That is your only
+   board access — you have no Airtable of your own, and every field you need comes back in the JSON.
+
+   **If it reports more than one match, stop.** The same component can exist twice (an old record
+   and a `[New]` one). Confirm identity, pick the canonical record, and note the choice on the card.
+   Linking results to the wrong record is invisible and poisons the rollups.
+2. Take the Figma node from `figma`. Never ask the user for it.
+3. **Take the staging URL from `staging` — and stop if it's empty.**
 
    No staging link means the component was never deployed, which means there is nothing to test and
    the row isn't `Ready for Testing`. **Report it as blocked and write nothing.** The Engineer
@@ -156,9 +158,22 @@ Disabled · Hover · Focus · Press/Tap · Keyboard navigation.
 conversation and writes nothing — those rows would claim the deployed build was verified when it
 wasn't.
 
-One Airtable row per matrix row, in the **Staging Testing** table, using the column names from
-`airtable.fields` in `productive.config.json`. Passes are recorded too — `To be deployed` means
-*all* cases passed, which is unanswerable if passes were never written.
+One row per matrix row, written in a single call:
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests add <Component> '[ {…}, {…} ]'
+```
+
+Keys: `case · result · variants · size · state · expected · suggestion · context`. The command maps
+them to the base's column names for you. Passes are recorded too — `To be deployed` means *all*
+cases passed, which is unanswerable if passes were never written.
+
+The command re-checks the staging link and refuses the batch if it is missing or dead, so the Step 1
+gate is enforced twice: once by you, once by the door. Being refused here is not a snag to route
+around — it means nothing was deployed and there was nothing to test.
+
+Re-testing a repair is `tests retest <Component> <case|--all> Passed|Failed`, which edits the row
+the Engineer claimed against. Never add a second row for a re-test.
 
 Failures additionally carry the finding format (see the **finding-format** skill) and paired
 evidence: **the Storybook story showing the defect, and the Figma node showing what it should be.**

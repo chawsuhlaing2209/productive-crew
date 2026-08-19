@@ -134,19 +134,32 @@ export async function set(name, field, value) {
   return { ok: true, field: f[field], value, verified: true };
 }
 
-export async function testsAdd(name, row) {
+/**
+ * Every column QA fills, mapped from the row's key to the base's column name. Variants, Size and
+ * State are what make the board filterable, so they are first-class keys here rather than
+ * something a caller has to know to fold into the case name.
+ */
+const ROW_KEYS = ['case', 'result', 'expected', 'suggestion', 'variants', 'size', 'state', 'context'];
+
+export async function testsAdd(name, rows) {
   const c = cfg();
   const tf = c.fields.stagingTesting;
-  const fields = { [tf.component]: name };
-  if (row.case) fields[tf.case] = row.case;
-  if (row.result) fields[tf.result] = row.result;
-  if (row.expected) fields[tf.expected] = row.expected;
-  if (row.suggestion) fields[tf.suggestion] = row.suggestion;
-  await api(encodeURIComponent(c.tables.stagingTesting), {
-    method: 'POST',
-    body: JSON.stringify({ records: [{ fields }] }),
+  const records = rows.map((row) => {
+    const fields = { [tf.component]: name };
+    for (const k of ROW_KEYS) {
+      if (row[k] !== undefined && row[k] !== null && row[k] !== '' && tf[k]) fields[tf[k]] = row[k];
+    }
+    return { fields };
   });
-  return { ok: true, added: 1 };
+
+  // Airtable caps a create at 10 records per request.
+  for (let i = 0; i < records.length; i += 10) {
+    await api(encodeURIComponent(c.tables.stagingTesting), {
+      method: 'POST',
+      body: JSON.stringify({ records: records.slice(i, i + 10) }),
+    });
+  }
+  return { ok: true, added: records.length };
 }
 
 /** PATCH, never POST — see repairable.js for why appending breaks the ladder. */
@@ -154,12 +167,15 @@ async function transition(name, caseName, picker, result) {
   const c = cfg();
   const tf = c.fields.stagingTesting;
   const targets = select(await testsFor(name), caseName, name, picker);
-  await api(encodeURIComponent(c.tables.stagingTesting), {
-    method: 'PATCH',
-    body: JSON.stringify({
-      records: targets.map((t) => ({ id: t.id, fields: { [tf.result]: result } })),
-    }),
-  });
+  const records = targets.map((t) => ({ id: t.id, fields: { [tf.result]: result } }));
+
+  // Airtable caps an update at 10 records per request — a --all over a wide matrix exceeds it.
+  for (let i = 0; i < records.length; i += 10) {
+    await api(encodeURIComponent(c.tables.stagingTesting), {
+      method: 'PATCH',
+      body: JSON.stringify({ records: records.slice(i, i + 10) }),
+    });
+  }
   return { ok: true, changed: targets.length, cases: targets.map((t) => t.case ?? null), result };
 }
 

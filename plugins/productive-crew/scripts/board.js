@@ -4,7 +4,7 @@
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" get <Component>
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" list [--status "<status>"]
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" set <Component> <field> <value>
-//   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests add <Component> '<json>'
+//   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests add <Component> '<json|json[]>'
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests fix <Component> <case|--all> --commit <sha>
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests retest <Component> <case|--all> <Passed|Failed>
 //   node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" tests list <Component>
@@ -12,9 +12,15 @@
 //
 // JSON on stdout. Exit 0 = did it. Exit 1 = refused or failed, with a reason.
 //
-// Agents call this instead of reaching the board directly, which is what makes "the only door
-// evidence goes through" true rather than merely asked for: they have Bash and this script, and
-// no board access of their own. The write gate below is therefore not advisory.
+// Agents call this instead of reaching the board directly. No agent carries the Airtable MCP, so
+// this is the path they have — and the gate below makes the correct write trivial and an incorrect
+// one impossible through it.
+//
+// It is a gate, not a sandbox. The credential lives in the environment and the agents have Bash,
+// so one could in principle bypass this with a raw HTTP call. What the gate buys is that the
+// mistakes which actually corrupt the board — appending a repair instead of editing it, logging a
+// test against a build nobody deployed, writing a derived column — cannot happen by accident on
+// the path everything is told to use.
 //
 // Provider comes from `board.provider` in productive.config.json — `airtable` (default) or `file`.
 // Credentials come from the ENVIRONMENT (AIRTABLE_API_KEY), never from a file in the repo.
@@ -132,11 +138,41 @@ async function main() {
         return out(await b.testsRetest(name, target === '--all' ? null : target, result));
       }
       if (sub === 'add') {
-        if (!name || !json) fail(`usage: board.js tests add <Component> '<json>'`);
-        let row;
-        try { row = JSON.parse(json); } catch { fail('the test row must be valid JSON'); }
-        if (!row.result) fail('a test row needs a "result" — Passed, Failed, or Fixed (To re-test)');
-        return out(await b.testsAdd(name, row));
+        if (!name || !json) fail(`usage: board.js tests add <Component> '<json|json[]>'`);
+        let rows;
+        try { rows = JSON.parse(json); } catch { fail('the test rows must be valid JSON'); }
+        rows = Array.isArray(rows) ? rows : [rows];
+        if (!rows.length) fail('no rows to add');
+
+        for (const [i, row] of rows.entries()) {
+          const at = rows.length > 1 ? ` (row ${i + 1})` : '';
+          if (row.result !== 'Passed' && row.result !== 'Failed') {
+            fail(
+              `refused${at}: a test result is Passed or Failed, not "${row.result ?? ''}". ` +
+              'Marking a case repaired is the Engineer\'s `tests fix`, not a new row.'
+            );
+          }
+          if (!row.case) fail(`refused${at}: a test row needs a "case"`);
+        }
+
+        // The staging gate. Rows in Staging Testing assert that a DEPLOYED build was verified, so
+        // a component with no reachable staging link has nothing that could have been tested. This
+        // was prose in the QA agent and got violated on the first real run; it is code now.
+        const component = await b.get(name);
+        if (!component.staging) {
+          fail(
+            `refused: ${name} has no Staging Storybook link, so there is no deployed build these ` +
+            'rows could describe. If you tested locally, report the findings — do not record them.'
+          );
+        }
+        if (!(await verify('staging', component.staging, { op: 'tests.add', component: name }))) {
+          fail(
+            `refused: ${name}'s staging link did not answer — ${component.staging}. ` +
+            'A build QA cannot reach is not a build QA can have tested.'
+          );
+        }
+
+        return out(await b.testsAdd(name, rows));
       }
       return fail('usage: board.js tests <add|fix|retest|list> …');
     }

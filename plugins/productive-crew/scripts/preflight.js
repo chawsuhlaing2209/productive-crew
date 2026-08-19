@@ -33,6 +33,19 @@ function main() {
   }
   if (looksUnset(cfg.repo?.slug)) problems.push('repo.slug is not set');
 
+  // Every agent reaches the board through scripts/board.js, which reads the token from the SHELL
+  // environment. Setting the plugin's airtable_token in /plugin config is not the same thing: that
+  // value is handed to the Airtable MCP server's own process and never reaches an agent's Bash.
+  // Catch it here, at the front door, rather than three steps into a run.
+  if ((cfg.board?.provider ?? 'airtable') === 'airtable' && !process.env.AIRTABLE_API_KEY && !process.env.AIRTABLE_TOKEN) {
+    problems.push(
+      'AIRTABLE_API_KEY is not in the environment — the crew reads and writes the board with it.\n' +
+      '  Add `export AIRTABLE_API_KEY="pat…"` to ~/.zshrc and restart Claude Code.\n' +
+      '  (Setting the token in the plugin config only reaches the Airtable MCP server, not the scripts.)\n' +
+      '  To run with no Airtable at all, set "board": { "provider": "file" } in productive.config.json.'
+    );
+  }
+
   report(problems);
 }
 

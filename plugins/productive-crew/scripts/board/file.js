@@ -52,14 +52,14 @@ export async function set(name, field, value) {
   return { ok: true, field, value };
 }
 
-export async function testsAdd(name, row) {
+export async function testsAdd(name, rows) {
   const db = load();
   if (!db.components.some((x) => x.name === name)) {
     throw new Error(`no component "${name}" on the board`);
   }
-  db.tests.push({ component: name, ...row });
+  for (const row of rows) db.tests.push({ component: name, ...row });
   save(db);
-  return { ok: true, added: 1 };
+  return { ok: true, added: rows.length };
 }
 
 /** Mutating the rows in place is the whole point — see repairable.js. */

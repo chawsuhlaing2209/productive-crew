@@ -128,6 +128,29 @@ already have a deploy — then asks you only what it couldn't work out. Expect q
 
 It only adds files you don't already have, and it never overwrites your work.
 
+### One thing setup can't do for you: the Airtable token
+
+The crew reads and writes your board with a script, and that script takes the token from **your
+shell**, not from the plugin's settings. Setting `airtable_token` in the plugin config only reaches
+the Airtable connector — it never reaches the crew.
+
+So do this once. In Airtable, create a [personal access token](https://airtable.com/create/tokens)
+with `data.records:read`, `data.records:write` and `schema.bases:read` on your base, then add it to
+`~/.zshrc`:
+
+```bash
+echo 'export AIRTABLE_API_KEY="patYOURTOKENHERE"' >> ~/.zshrc
+```
+
+Restart Claude Code afterwards so it picks up the change. If you skip it, every command stops at
+the front door and tells you this — nothing runs half-configured.
+
+> **Never put the token in your project.** It goes in `~/.zshrc`, which is outside the repo. A file
+> in your repo may *reference* it as `"${AIRTABLE_API_KEY}"`, never contain it.
+
+Want to try the crew with no Airtable account at all? Put `"board": { "provider": "file" }` in
+`productive.config.json` and the board becomes a local file. Everything else works the same.
+
 ### "Where should the preview live?"
 
 Every component gets a **preview link** — a published Storybook that you and QA can open. This
