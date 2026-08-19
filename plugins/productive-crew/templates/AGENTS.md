@@ -61,6 +61,7 @@ a blocker is a card too — what broke + one thing to try.
 | 🚀 DevOps | staging → main → production deploy | Junior (prod gated) |
 | 🧭 PM | verify records + links · sync Asana (daily) | Autonomous |
 | 📄 doc-generator | docs/ | Senior (optional) |
+| ⚖️ governance-review | proposes trust promotions — read-only | Advisor |
 
 The human orchestrator (you) owns the registry — see `governance/registry.md`. The agents themselves
 ship with the plugin; install or update it to change them.

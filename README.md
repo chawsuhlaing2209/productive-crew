@@ -251,6 +251,7 @@ A failure always wins. If a test fails on something already shipped, it drops ba
 | 🔍 **QA** | Tests it in your browser, logs findings | Fix anything it finds |
 | 🚀 **DevOps** | Ships to production, once you approve | Approve its own deploy |
 | 📄 **doc-generator** | Writes the docs page | Invent what a component is for — it asks |
+| ⚖️ **governance-review** | Proposes which agents have earned more autonomy | Change anyone's level, including its own |
 
 The limits are the point. QA can't quietly fix what it finds, so every problem goes back through the
 Engineer and is on the record. The Engineer can't mark its own work done.
@@ -269,6 +270,7 @@ Engineer and is on the record. The Engineer can't mark its own work done.
 | `/productive-crew:tokens` | Rebuild tokens after a new export |
 | `/productive-crew:sweep` | Check the whole board and tell you what needs you |
 | `/productive-crew:docs <Component>` | Write the docs page |
+| `/productive-crew:review` | Monthly check: which agents have earned more trust, which have lost it |
 
 ---
 

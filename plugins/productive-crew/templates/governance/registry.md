@@ -10,6 +10,7 @@ The one file a successor reads first. "What can touch production right now?"
 | 🚀 DevOps *(optional — `deploy.enabled`)* | Junior · prod human-gated | git staging→main · Pages deploy | build CI + orchestrator approval | `AGENTS_PAUSED` |
 | 🧭 PM | Autonomous *(starts Observer)* | verify records + links · sync Asana (daily) | `${CLAUDE_PLUGIN_ROOT}/scripts/verify.js` (deterministic) | `AGENTS_PAUSED` |
 | 📄 doc-generator | Senior (optional) | `docs/` | docs-build CI | `AGENTS_PAUSED` |
+| ⚖️ governance-review | Advisor | read-only — proposes, never edits | you | `AGENTS_PAUSED` |
 
 **Orchestrator:** [your name] — owns this registry, promotions, and the kill switch.
 
