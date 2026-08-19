@@ -49,13 +49,13 @@ yours differs. It matches `scripts/status.js` exactly; if you change one, change
 ```
 IF(
   AND(FIND("Failed", {Staging Testing Results Summary} & "") > 0,
-      FIND("Fixed (To re-test)", {Staging Testing Results Summary} & "") > 0),
+      FIND("re-test", {Staging Testing Results Summary} & "") > 0),
   "Fixing",
 IF(
   FIND("Failed", {Staging Testing Results Summary} & "") > 0,
   "To be fixed",
 IF(
-  FIND("Fixed (To re-test)", {Staging Testing Results Summary} & "") > 0,
+  FIND("re-test", {Staging Testing Results Summary} & "") > 0,
   "Fixed",
 IF({Production Storybook}, "Completed",
 IF({Total Staging Tests} > 0, "To be deployed",
@@ -63,6 +63,11 @@ IF({Staging Storybook}, "Ready for Testing",
 IF(AND({Figma}, {Design} = "Done"), "To-do",
 "")))))))
 ```
+
+**Match on `"re-test"`, not on the whole label.** The option is spelled `Fixed (To re-test)` today,
+but `FIND("Fixed", …)` would also match it — `Fixed` is a substring — and an exact match breaks the
+day someone shortens the label. `re-test` is the part that carries the meaning and survives every
+spelling of it. `scripts/status.js` matches the same way.
 
 **Order is the design, not style.** The three repair branches come first so a `Failed` row outranks
 everything — including `Completed`. A regression logged after release has to be able to pull a

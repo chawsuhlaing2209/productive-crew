@@ -24,9 +24,12 @@ export const LADDER = [
  * @param {Array<{result:string}>} tests  the component's Staging Testing rows
  */
 export function deriveStatus(c, tests = []) {
-  const has = (r) => tests.some((t) => t.result === r);
-  const failed = has('Failed');
-  const refix = has('Fixed (To re-test)');
+  // Match the re-test marker loosely. The option is spelled "Fixed (To re-test)" in the base
+  // today, but the exact label is the kind of thing that gets edited, and an exact-string compare
+  // turns a harmless rename into a silent misread of every repair. "re-test" is the part that
+  // carries the meaning, and it survives "Fixed(re-test)", "Fixed (To re-test)", and "To Re-test".
+  const failed = tests.some((t) => t.result === 'Failed');
+  const refix = tests.some((t) => /re-?test/i.test(t.result ?? ''));
 
   // The repair loop comes first, because a failure has to outrank everything — including a
   // shipped component. A regression logged after release must be able to pull it back, or the

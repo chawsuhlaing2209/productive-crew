@@ -50,7 +50,7 @@
       }
     },
     "choices": {
-      "$comment": "Cell VALUES, not column names — left exactly as the base spells them today. The Development formula matches these literally. Parity Status is inconsistent between the token tables (Base Tokens: 'In Testing', Semantic Tokens: 'In testing') and still needs a decision.",
+      "$comment": "Cell VALUES, not column names. The Development formula and scripts/status.js both match the re-test result on the substring \"re-test\" rather than the whole label, so renaming that option does not silently break the ladder.",
       "result": [
         "Passed",
         "Failed",
