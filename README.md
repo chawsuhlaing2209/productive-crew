@@ -60,15 +60,19 @@ In Claude Code, type:
 /plugin install productive-crew@productive
 ```
 
-**You'll be asked for one token: Asana.** It's optional — skip it and the crew runs without
-ticketing. It's a *personal access token*, not a login: there is no "Sign in with Asana" button
-here, so if you're waiting for one, that's why it never appears. Get it from
-[Asana's token page](https://developers.asana.com/docs/personal-access-token).
+**You'll be asked for two tokens.** Both are *personal access tokens* — neither has a
+"Sign in with…" button, so if you're waiting for one, that's why it never appears.
 
-**Figma** authorizes by login instead, the first time something needs it. If Figma reads fail later,
-type `/mcp` and authorize it there.
+| Token | Get it from | Needed? |
+|---|---|---|
+| **Airtable** | [airtable.com/create/tokens](https://airtable.com/create/tokens) — scopes `data.records:read`, `data.records:write`, `schema.bases:read` on your base | Required. The board is the registry |
+| **Asana** | [Asana's token page](https://developers.asana.com/docs/personal-access-token) | Optional — skip it and the crew runs without ticketing |
 
-**Airtable is not asked for here** — it's Step 3, and it's deliberately different. See below.
+Paste them and you're done: the Airtable one reaches the crew's scripts on your next session start,
+and the Asana one goes straight to its server. Nothing else to configure.
+
+**Figma** is the odd one out — it authorizes by login, the first time something needs it. If Figma
+reads fail later, type `/mcp` and authorize it there.
 
 Restart Claude Code after installing.
 
@@ -159,35 +163,39 @@ The full contract, including why the order matters, lands in your project at
 
 ---
 
-## Step 3 · Store your Airtable token
+## Step 3 · Check the Airtable token landed
 
-This is the one step you do in **Terminal** rather than in chat, and there's a reason: anything you
-type in a chat is kept in the conversation transcript, and a token in a transcript has to be treated
-as leaked.
-
-1. Create a [personal access token](https://airtable.com/create/tokens) with these three scopes on
-   your base: **`data.records:read`**, **`data.records:write`**, **`schema.bases:read`**.
-
-2. Open **Terminal** and paste this exactly — it finds the plugin wherever it installed itself:
-
-   ```bash
-   node "$(find ~/.claude/plugins/cache -path '*productive-crew*/scripts/credentials.js' | sort -V | tail -1)" store airtable
-   ```
-
-3. Paste your token at the prompt and press Enter. **Your typing is hidden** — that's expected, not
-   a frozen screen.
-
-It's saved to `~/.claude/productive-crew/credentials.json`, readable only by you. No shell config to
-edit, no restart, and you never do it again.
-
-Check it landed:
+If you pasted it at install, this is one command and you're done:
 
 ```bash
 node "$(find ~/.claude/plugins/cache -path '*productive-crew*/scripts/credentials.js' | sort -V | tail -1)" check airtable
 ```
 
-> Running in CI, or you'd rather use an environment variable? `AIRTABLE_API_KEY` works too, and
-> takes precedence over the stored file.
+It prints where the token came from — never the token itself.
+
+<details>
+<summary>Nothing found, or you'd rather not have it copied to disk</summary>
+
+The board is read by a **script**, not by a connector, and a plain script can't reach the OS
+keychain your install prompt writes to. So a session-start hook copies the value once into
+`~/.claude/productive-crew/credentials.json` — owner-only, outside every repo. If you'd rather it
+weren't copied, leave the install prompt blank and use one of these instead. Both take precedence
+over the file.
+
+**Store it yourself**, in Terminal:
+
+```bash
+node "$(find ~/.claude/plugins/cache -path '*productive-crew*/scripts/credentials.js' | sort -V | tail -1)" store airtable
+```
+
+It prompts, and **your typing is hidden** — that's expected, not a frozen screen.
+
+**Or use an environment variable** — `AIRTABLE_API_KEY`. This is the one to use in CI.
+
+Whichever you pick: never paste a token into the chat. Anything typed there is kept in the
+conversation transcript, and a token in a transcript has to be treated as leaked.
+
+</details>
 
 ---
 
@@ -590,7 +598,8 @@ The crew stops rather than guessing. Most stops are one of these:
 | It says | What to do |
 |---|---|
 | *not set up* | Run `/productive-crew:setup` |
-| *no Airtable token* | Step 3 — the Terminal command. Pasting it into the plugin settings doesn't reach the crew |
+| *no Airtable token* | Restart Claude Code once after pasting it at install — the bridge runs at session start. Still nothing? Step 3's fallback |
+| *Asana won't connect / needs auth* | Check the token in `/plugin` → productive-crew. Asana has no login flow; it needs a personal access token |
 | *tokens not built* | Export from Figma to `tokens/tokens.json`, then `/productive-crew:tokens` |
 | *Build failed; unable to find config file* | Style Dictionary's CLI only looks for `config.json` / `config.js`. Your `tokens:build` script needs `--config style-dictionary.config.js` |
 | *no ticket* | Start with `/productive-crew:build`, not by calling an agent directly |
@@ -599,7 +608,6 @@ The crew stops rather than guessing. Most stops are one of these:
 | *Storybook won't start* | Usually a missing dependency. Try `npm install` |
 | *deploy command failed* | Run your deploy command by hand and see what it says |
 | *no browser connected* | Install the Claude in Chrome extension and sign in |
-| *Asana won't connect* | The token wasn't captured at install. Reinstall the plugin and paste it at the prompt |
 | *Figma reads fail* | Run `/mcp` and authorize Figma. It needs a login, not a token |
 | *UNVERIFIED — GitHub returned 403* | Rate limited, or the repo is private. Set `GITHUB_TOKEN` |
 | *unbound in Figma* | A colour or spacing isn't attached to a variable. Fix it in Figma, re-export |

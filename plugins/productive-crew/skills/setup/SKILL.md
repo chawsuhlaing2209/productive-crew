@@ -43,15 +43,17 @@ every one of them fails later and confusingly if it is wrong now.
 
 | Check | If it fails, say exactly this |
 |---|---|
-| Airtable — `node "${CLAUDE_PLUGIN_ROOT}/scripts/credentials.js" check airtable` | No token stored. Walk them through §1.6 below — it takes a minute and only happens once. |
-| Asana — any read call | The Asana token wasn't captured at install. Asana has **no login flow here** — it needs a **personal access token** (see `developers.asana.com/docs/personal-access-token`). Reinstall and paste it, or say you're running without tickets. |
+| Airtable — `node "${CLAUDE_PLUGIN_ROOT}/scripts/credentials.js" check airtable` | No token yet. If they pasted one at install, the bridge writes it at **session start** — have them restart Claude Code first, because that costs nothing and fixes the common case. Only if that fails, walk them through §1.6. |
+| Asana — any read call | The Asana token is missing or wrong. Asana has **no login flow here** — it needs a **personal access token** (`developers.asana.com/docs/personal-access-token`). Send them to `/plugin` → productive-crew to set it, or record that they're running without tickets. |
 | Figma — `whoami` | The Figma server needs an OAuth authorization, which only an interactive session can do. Send them to `/mcp`. |
 
 **A missing Asana token is a choice, not a blocker** — the crew runs without ticketing. A missing
 Airtable token is a blocker: the board is the registry.
 
-There is **no Airtable MCP server** and no Airtable install prompt. The crew reaches the board
-through `scripts/board.js`, which reads the token from `credentials.js`. One token, one place.
+There is **no Airtable MCP server.** The crew reaches the board through `scripts/board.js`, which
+reads the token from `credentials.js` — the environment first, then
+`~/.claude/productive-crew/credentials.json`, which a session-start hook fills from the install
+prompt. A script cannot reach the keychain the prompt writes to, which is why the hook exists.
 
 **Never work around a missing token** by reaching for a connector the main session can see. The
 agents' tool patterns point at the plugin's servers; a connector that works for you does not work

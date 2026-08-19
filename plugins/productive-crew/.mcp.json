@@ -5,15 +5,7 @@
       "url": "https://mcp.figma.com/mcp"
     },
     "asana": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@roychri/mcp-server-asana"
-      ],
-      "env": {
-        "ASANA_ACCESS_TOKEN": "${user_config.asana_token}",
-        "ASANA_TOKEN": "${user_config.asana_token}"
-      }
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/asana-server.sh"
     }
   }
 }
