@@ -272,6 +272,20 @@ Engineer and is on the record. The Engineer can't mark its own work done.
 | `/productive-crew:docs <Component>` | Write the docs page |
 | `/productive-crew:review` | Monthly check: which agents have earned more trust, which have lost it |
 
+### Make the sweep run itself
+
+`/productive-crew:sweep` is what notices work nobody was told about — a component that failed
+testing with no ticket, one sitting ready to ship. It's worth having run on its own.
+
+Ask Claude: *"run the productive-crew sweep for ~/my-design-system every weekday at 8:55am."*
+
+It becomes a scheduled task that survives restarts, and runs on next launch if the app was closed
+when it was due. **Name the project folder in the request** — a scheduled run starts fresh with no
+memory of the conversation that set it up, so it needs to be told where to look.
+
+Do this once the crew is actually working. A daily job firing into a half-configured project just
+produces a daily failure you learn to ignore.
+
 ---
 
 ## When something stops

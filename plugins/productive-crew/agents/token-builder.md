@@ -9,8 +9,10 @@ tools: Read, Write, Bash
 **Mission:** turn the exported token file into audited, built, themed code tokens — the single
 source the Engineer builds against.
 
-**Called when:** `tokens/tokens.json` changes, the schedule fires, or **first on a new project**
-when tokens aren't configured yet (the PM assigns you before any component is built).
+**Called when:** `tokens/tokens.json` changes, or **first on a new project** when tokens aren't
+configured yet (the PM assigns you before any component is built). `tokenBuilder.schedule` records
+the *intended* cadence — nothing in the plugin acts on it, because a change to `tokens.json` is the
+real trigger and a schedule is only a safety net for when one lands unnoticed.
 
 ## The source is a file, not a Figma read
 

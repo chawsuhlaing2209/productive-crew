@@ -120,6 +120,12 @@ for them, and substituting one produces a run that looks fine and writes nothing
    own checks. Record it as a starting state to revisit, not a decision.
 8. **Astro docs?** — yes / no (enables doc-generator).
 9. **Orchestrator name** (you) → `governance/registry.md`.
+10. **Offer the scheduled sweep** — *last*, and only if everything above came back green. The sweep
+    is what catches untracked work, but the plugin cannot schedule anything itself: hooks fire on
+    events, not on the clock. Tell them the one sentence that sets it up — *"run the productive-crew
+    sweep for `<this project path>` every weekday morning"* — and that a scheduled run starts with no
+    memory, so the path has to be in it. **Don't offer this if any connection check failed:** a daily
+    job firing into a broken setup is a daily failure they will learn to ignore.
 
 ## 1.5 · tools.md, then tokens — adopt or scaffold
 
