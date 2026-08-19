@@ -27,8 +27,8 @@ and **never ask the user for a Figma node** — it lives in the Airtable row.
 
 1. **Config check.** Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/preflight.js"`. If config isn't set up
    (missing `productive.config.json`, or placeholder ids), run `/productive-crew:setup` and stop.
-2. **Registry check — Airtable first.** Airtable is the registry. Look the component up in the
-   Components table.
+2. **Registry check — the board first.** `node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" get <Component>`
+   is how every agent reads it; no agent has Airtable access of its own.
    - **Not there** → tell the designer it isn't registered, and offer to add it (only *then*
      do you need its Figma node, to create the row).
    - **There** → read its status and its Figma node link from the row.
@@ -119,8 +119,9 @@ Airtable dashboard · Asana tasks.
 
 ## Config
 
-- Names + ids live in `productive.config.json` (this repo). **Secrets live in the plugin config**
-  — set at install time, never in this repo.
+- Names + ids live in `productive.config.json` (this repo). **Never a secret.**
+- The Airtable token lives in `~/.claude/productive-crew/credentials.json`, outside every repo,
+  written by `scripts/credentials.js`. The Asana token comes from the plugin's install prompt.
 - Claude runs on your Pro login — never set `ANTHROPIC_API_KEY`.
 
 ## Kill switch
