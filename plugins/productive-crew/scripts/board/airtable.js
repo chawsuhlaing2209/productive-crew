@@ -48,7 +48,12 @@ function token() {
 }
 
 async function api(path, init = {}) {
-  const res = await fetch(`${API}/${path}`, {
+  // The records API is addressed per-base: /v0/{baseId}/{table}. Every caller passes only the
+  // table (plus any query string), so the baseId is prepended here — the one place all six
+  // records call sites go through. schemaCheck() builds its own meta/bases/… url and does not
+  // use this helper. Without this, every read and write 404s with NOT_FOUND, which is
+  // indistinguishable from a token that lacks access to the base.
+  const res = await fetch(`${API}/${cfg().baseId}/${path}`, {
     ...init,
     headers: { Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json', ...init.headers },
   });
