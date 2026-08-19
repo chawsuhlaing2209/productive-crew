@@ -43,7 +43,7 @@ every one of them fails later and confusingly if it is wrong now.
 
 | Check | If it fails, say exactly this |
 |---|---|
-| Airtable — `ping` | The Airtable token wasn't captured at install. It is a **personal access token**, required, from `airtable.com/create/tokens`, with read+write on the base. Reinstall the plugin and paste it at the prompt. |
+| Airtable — `echo "${AIRTABLE_API_KEY:-unset}"` | The crew reads and writes the board with a **script**, which takes the token from the shell — pasting it at the install prompt only reaches the MCP server and never reaches the scripts. Create a personal access token at `airtable.com/create/tokens` with `data.records:read`, `data.records:write` and `schema.bases:read`, then `echo 'export AIRTABLE_API_KEY="pat…"' >> ~/.zshrc` and restart Claude Code. |
 | Asana — any read call | The Asana token wasn't captured at install. Asana has **no login flow here** — it needs a **personal access token** (see `developers.asana.com/docs/personal-access-token`). Reinstall and paste it, or say you're running without tickets. |
 | Figma — `whoami` | The Figma server needs an OAuth authorization, which only an interactive session can do. Send them to `/mcp`. |
 
@@ -160,8 +160,10 @@ Then do the part that has real value and *is* reliable:
 
 ### Verify the schema — and refuse on a mismatch
 
-Read the base (`list_tables_for_base`, then `get_table_schema`) and compare it against
-`airtable.tables` and `airtable.fields`. Report a diff, not a verdict:
+Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/board.js" schema check`. It reads the live base and diffs
+it against `airtable.tables` and `airtable.fields`, over the same code path the crew uses every day
+— so a green check here means the crew can actually read and write, not merely that some connector
+somewhere could. Report the diff, not a verdict:
 
 ```
 🧭 Airtable · appXXXX
@@ -172,7 +174,8 @@ Staging Testing   ✗ missing "Suggestion for Improvement"
 
 **A near-miss is the dangerous case.** Airtable matches names case-sensitively and a missing field
 reads as empty rather than as an error, so `Composed in` doesn't fail loudly — the crew just writes
-nothing and the board quietly stops reflecting reality. Say which side to change; either is fine.
+nothing and the board quietly stops reflecting reality. `schema check` names those specifically
+rather than reporting the field as missing. Say which side to change; either is fine.
 
 **Do not continue past a mismatch on a required field.** A green setup over a wrong schema is worse
 than a failed one.
