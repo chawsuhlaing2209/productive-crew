@@ -72,8 +72,9 @@ for them, and substituting one produces a run that looks fine and writes nothing
     (or offer to create), component prefix = ask (default `component/`). Write `repo.*`. If names differ
     from the defaults, update the refs in `.github/workflows/pages.yml`. **Existing deploy workflow →
     ask: adapt it or add ours alongside. Never clobber.**
-4. **Airtable** — new base? (yes → build it; no → paste an existing `baseId`).
-5. **Asana** — new project? (yes → build it; no → paste `projectId`).
+4. **Airtable** — paste the `baseId`. If they don't have a base, point them at
+   `governance/airtable-schema.md` and let them build it; you verify it in §2.
+5. **Asana** — paste the `projectId`, or skip it and run without ticketing.
 6. **token-builder schedule** — daily / weekly / manual → `tokenBuilder.schedule`.
 7. **Deployment** — `deploy.enabled` stays **true**. This is a detect-and-confirm, not an open
    question: without a staging build there is no QA stage and no test records, so turning it off
@@ -145,38 +146,50 @@ committing the export or by CI/CD, and always lives at that exact path. Tell the
 setup: the crew builds tokens, it does not export them, because a Figma read only returns the
 variables that are *applied* and would silently miss the rest.
 
-## 2 · Create Airtable (if yes)
+## 2 · Connect Airtable — you bring the base, we verify it
 
-New base named after the design system, tables:
+**Do not offer to create the base.** The crew cannot reliably create an Airtable base, and offering
+it produced a setup that claimed success and delivered nothing. Ask which they have:
 
-Every table and column name is **Title Case**.
+- **A base already** → take the base id.
+- **No base** → point them at `templates/governance/airtable-schema.md`, which lists every table and
+  field, the `Development` formula, and a sixty-second test that proves the formula is right. They
+  build it once, by hand, and it takes a few minutes.
 
-- **Components** — Components (primary) · Category · Figma · Commit · Staging Storybook ·
-  Production Storybook · Astro Link · [Staging] Test Records (→ Staging Testing) ·
-  Total Staging Tests · Staging Passed Count · Staging Testing Results Summary ·
-  **Development** (formula) · Synchronization %
-- **Base Tokens** — Primitives · Value · Parity Status
-- **Semantic Tokens** — Tokens (formula) · ☀️ Value (→ Base Tokens) · Parity Status
-- **Staging Testing** — one row per variant/state/prop · Testing Results · Expected Results ·
-  Attachment · Suggestion for Improvement · Composed In (→ Components)
+Then do the part that has real value and *is* reliable:
 
-There is **no Production Testing table** — testing is staging-only.
+### Verify the schema — and refuse on a mismatch
 
-Wire **Development** as a *derived* formula (Figma → To-do; commit → To be staged; staging link →
-Ready for Testing; a Failed case → To be fixed; all Passed → To be deployed; production Storybook →
-Completed). Never make Development writable. Write the ids into `productive.config.json`.
+Read the base (`list_tables_for_base`, then `get_table_schema`) and compare it against
+`airtable.tables` and `airtable.fields`. Report a diff, not a verdict:
 
-> On an **existing repo**, leave the Components table empty — the crew registers a component the
-> first time it works on it. Setup creates the structure, not a census of what's already there.
+```
+🧭 Airtable · appXXXX
+Components        ✓ 11 of 11 fields
+Staging Testing   ✗ missing "Suggestion for Improvement"
+                  ✗ "Composed in" — config expects "Composed In"
+```
 
-> TODO: implement via the Airtable MCP (`create_base`, `create_table`, `create_field`).
+**A near-miss is the dangerous case.** Airtable matches names case-sensitively and a missing field
+reads as empty rather than as an error, so `Composed in` doesn't fail loudly — the crew just writes
+nothing and the board quietly stops reflecting reality. Say which side to change; either is fine.
 
-## 3 · Create Asana (if yes)
+**Do not continue past a mismatch on a required field.** A green setup over a wrong schema is worse
+than a failed one.
 
-New project + a task template: one task per component with subtasks Implementation · Test · Fix · Deploy.
-Write `workspaceId` + `projectId` into `productive.config.json`.
+### Then check the formula
 
-> TODO: implement via the Asana MCP.
+`Development` must be a formula, never writable, and a `Failed` row must outrank everything. Walk
+them through the proof test in `airtable-schema.md` — it takes a minute and catches the single error
+that would let a regression on a shipped component stay invisible.
+
+## 3 · Connect Asana (optional)
+
+Same shape: **you don't create the project.** Ask for a `projectId`, or accept that they're running
+without ticketing — the crew works without it, minus the ticket trail.
+
+If they give you one, confirm you can read it before writing it into the config. An unreachable
+project id looks identical to a working one until the first handoff fails.
 
 ## 4 · Scaffold what's missing — never what's there
 
@@ -188,7 +201,8 @@ repo doesn't already have, one at a time, saying what you're adding:
 | `templates/productive.config.json` | repo root | it already exists — edit it instead |
 | `templates/AGENTS.md` | repo root | an `AGENTS.md` exists — append the crew section, never replace |
 | `templates/CLAUDE.md` | repo root | a `CLAUDE.md` exists — add the `@AGENTS.md` import if absent |
-| `templates/governance/` | repo root | a `governance/` exists |
+| `templates/governance/` | repo root | a `governance/` exists — **always** copy
+  `airtable-schema.md` though; it is the board contract they need to build against |
 | `templates/tokens/` | repo root | any token pipeline was detected in §0 |
 | `templates/style-dictionary.config.js` | repo root | a Style Dictionary config already exists |
 | `templates/.githooks/pre-commit` | repo root | a `.githooks/` exists — then tell them to run `git config core.hooksPath .githooks` |

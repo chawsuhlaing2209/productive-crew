@@ -21,7 +21,7 @@ You need five things. Four are free.
 | **Claude Code** | where you type the commands | Desktop app, IDE extension, or terminal |
 | **Node.js** | runs the build on your machine | [nodejs.org](https://nodejs.org) — the "LTS" version |
 | **A Figma file** | your components and variables live here | Any paid tier with Dev Mode |
-| **An Airtable base** | the board — what's built, tested, shipped | Free tier is fine |
+| **An Airtable base** | the board — what's built, tested, shipped | Free tier. You build it from the schema doc — a few minutes, once |
 | **A GitHub repo** | where the code lives | Free. Must be created before setup |
 
 **Asana is optional.** With it, each component gets a ticket and a comment trail. Without it,
@@ -120,7 +120,9 @@ already have a deploy — then asks you only what it couldn't work out. Expect q
 
 - **What's this design system called?**
 - **Your Figma file** — paste the link
-- **Airtable** — shall I create the base for you, or do you have one?
+- **Your Airtable base id** — you build the base once from `governance/airtable-schema.md`,
+  which lists every field and the status formula. Setup then checks it matches and tells you
+  exactly what's wrong if it doesn't
 - **Where should the preview live?** — see below
 - **Your name**, for the governance record
 
