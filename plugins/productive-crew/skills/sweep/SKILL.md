@@ -5,7 +5,18 @@ description: Run the PM sweep — verify every record and link on the board, rec
 
 # /productive-crew:sweep
 
-Delegate to the **pm** agent.
+Delegate to the **pm** agent: read the board with `${CLAUDE_PLUGIN_ROOT}/scripts/board.js list`,
+verify every piece of evidence with `${CLAUDE_PLUGIN_ROOT}/scripts/verify.js`, reconcile Asana, and
+return one card — what's verified, what's in a fix loop, what waits on approval.
+
+**Finish by recording the run:**
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/scripts/run-log.js" record sweep '{"ok":true,"components":12,"tickets":3}'
+```
+
+That line is what makes a *missed* sweep visible. Without it, a scheduler that silently stopped
+firing looks exactly like a board with nothing to report.
 
 ## Making it run by itself
 
@@ -20,6 +31,9 @@ Two things to get right when you do:
 
 - **The scheduled run starts with no memory of this conversation.** Its prompt must name the project
   directory, or it will sweep whatever happens to be open.
-- **Schedule it only once the crew actually works** — tokens set, Airtable reachable. A daily job
-  firing into a broken setup produces a daily failure, and you will start ignoring it. Read the board, verify evidence with `${CLAUDE_PLUGIN_ROOT}/scripts/verify.js`,
-reconcile Asana, and return one card: what's verified, what's in a fix loop, what waits on approval.
+- **Schedule it only once the crew actually works** — token stored, board reachable. A daily job
+  firing into a broken setup produces a daily failure, and you will start ignoring it.
+- **Declare the cadence** in `productive.config.json` once it's scheduled:
+  `"schedule": { "sweep": { "everyHours": 24 } }`. That doesn't run anything — it's what lets the
+  crew notice the scheduler has stopped. Without it, a job that quietly died is indistinguishable
+  from a quiet week.

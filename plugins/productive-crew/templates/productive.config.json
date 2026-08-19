@@ -108,6 +108,12 @@
   "pm": {
     "schedule": "daily"
   },
+  "schedule": {
+    "$note": "What you INTENDED to run on a clock, in hours. The plugin cannot schedule anything — it ships hooks, which fire on events, not on the clock — so the job itself lives outside (a Claude Code scheduled task, launchd, cron, CI). Declaring it here is what lets the crew notice when it stops happening: scripts/run-log.js compares this against .crew/runs/<kind>.jsonl and the session-start hook says so out loud. Remove a key to stop checking it — an undeclared cadence is never warned about.",
+    "sweep": {
+      "everyHours": 24
+    }
+  },
   "deploy": {
     "$note": "enabled=false is NOT WIRED YET: no staging link, so no QA stage and no Staging Testing rows. provider decides WHO publishes the staging build — the crew only needs a URL it can verify, and it does not care who produced it.",
     "enabled": true,

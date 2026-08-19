@@ -321,6 +321,30 @@ memory of the conversation that set it up, so it needs to be told where to look.
 Do this once the crew is actually working. A daily job firing into a half-configured project just
 produces a daily failure you learn to ignore.
 
+**Then tell the crew what you scheduled**, in `productive.config.json`:
+
+```json
+"schedule": { "sweep": { "everyHours": 24 } }
+```
+
+That line is not what makes it run — it's what makes a *stopped* scheduler visible. A job that
+quietly stops firing looks exactly like a board with nothing to report: both are silence. With the
+cadence declared, every sweep records itself in `.crew/runs/`, and the next time you open the
+project Claude tells you the sweep hasn't run in four days.
+
+Check it yourself any time:
+
+```bash
+node "<plugin-root>/scripts/run-log.js" status
+```
+
+```
+sweep      every 24h              last 4 days ago        ⚠ OVERDUE
+```
+
+Remove the key and nothing is checked — an undeclared cadence is never warned about, because a
+warning you didn't ask for is one you learn to dismiss.
+
 ---
 
 ## When something stops
