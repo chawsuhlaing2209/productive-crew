@@ -4,6 +4,10 @@
     "resolves each name to your base's ids at startup, so a duplicated base needs",
     "only a new airtable.baseId. Change a name only if your base renames the field."
   ],
+  "board": {
+    "$note": "Who holds the board. airtable = the real base, credentials from the AIRTABLE_API_KEY environment variable (never a file in the repo). file = .crew/board.json, for running the crew with no account at all — fixtures, tests, a first component before a base exists. It is a different board, not a cache of one: a cached copy would go stale and still look live.",
+    "provider": "airtable"
+  },
   "airtable": {
     "$comment": "Table and column names are Title Case, matching the base exactly. Airtable resolves table names case-sensitively.",
     "baseId": "appXXXXXXXXXXXXXX",
