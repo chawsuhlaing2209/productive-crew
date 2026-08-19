@@ -47,6 +47,28 @@ Only from what is actually recorded. Some of it exists:
 | DevOps — merged with a failing staging case | Airtable: staging rows vs the merge date |
 | token-builder — a build broke a component | CI history, reverts touching `build/tokens/` |
 | Anything "over N weeks" | the window between the last review date and today |
+| PM — verification history | `.crew/verify-log.jsonl` — one line per `verify.js` call, `{ts, field, value, ok}` |
+
+### The PM needs an audit, not just a log
+
+The PM is the only agent that both **writes** the board and **verifies** it. Nothing else checks
+its work, so check it directly rather than taking the log's word for it.
+
+**Re-verify the board yourself.** Read every `Commit`, `Staging Storybook` and `Production
+Storybook` on the Components table and run
+`node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js" <field> <value>` on each.
+
+- **Any recorded link that does not verify is a fired demotion trigger** — its rule is *"demote if
+  it marks a broken link verified"*, and a dead link sitting in an evidence column is exactly that.
+  Report the component and the value; don't average it away against the ones that passed.
+- A link that has since rotted is not the same as one recorded broken. Check `.crew/verify-log.jsonl`
+  for when it was last green: verified-then-rotted is a stale board, verified-never-green is the
+  trigger. Say which you found.
+
+For **promotion** to Autonomous its rule needs two things from the log: a clean quarter of runs,
+**and** at least one `ok: false` that was genuinely bad and was then corrected. A quarter with no
+failures at all does not meet it — a verifier that has never caught anything is untested, not
+proven, and that distinction is the whole point of the criterion.
 
 **A criterion you cannot measure is not passed.** It is unevaluated, and it goes in the blind-spots
 list. Never score a criterion as met because nothing contradicted it — most of these are absence of

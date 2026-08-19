@@ -51,8 +51,12 @@ Copy the matching line into your review note the day you promote or demote.
   Staging promotion can reach Junior; production deploy never rises above a human gate, whatever the
   record. **Demote** if it ever merges a component with a failing staging case.
 - 🧭 **PM** — start Observer → target **Autonomous**, scope read-registry + Asana.
-  Autonomous once `verify.js` has run a clean quarter and caught a real bad record. **Demote** if it
-  marks a broken link verified.
+  Autonomous once `verify.js` has run a clean quarter **and** caught a real bad record that was
+  then corrected — evidence in `.crew/verify-log.jsonl`. A quarter with no catches does not count:
+  a verifier that never caught anything is untested, not proven.
+  **Demote** if it marks a broken link verified — auditable at any time by re-running `verify.js`
+  over every evidence column on the board. It is the only agent that both writes the board and
+  verifies it, so it is the one that most needs checking from outside.
 - 📄 **doc-generator** — start Observer → target **Senior**, scope `docs/`.
   Senior once docs-build CI is green on ≥95% of its auto-merges over 8 weeks. **Demote** if it
   publishes docs for a component that isn't Completed.

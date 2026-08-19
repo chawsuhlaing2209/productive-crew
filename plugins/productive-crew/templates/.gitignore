@@ -6,3 +6,6 @@ storybook-static/
 .env.local
 **/.claude/settings.local.json
 .screenshots/
+
+# .crew/verify-log.jsonl is deliberately NOT ignored — it is the only record that
+# verification ran, and the PM's promotion criteria are unanswerable without it.

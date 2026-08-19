@@ -1,7 +1,32 @@
 #!/usr/bin/env node
 // verify.js — the "prove it" checks. Evidence only counts if these pass.
+//
+// Every call is appended to .crew/verify-log.jsonl in the project. That log is the ONLY
+// record that verification ever ran, and the PM's promotion criterion ("verify.js has run a
+// clean quarter and caught a real bad record") is unanswerable without it. Logging is
+// best-effort: a log that cannot be written must never fail a verification.
 
-export async function verify(field, value) {
+import { appendFileSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { projectPath } from './project.js';
+
+function log(entry) {
+  try {
+    const file = projectPath('.crew', 'verify-log.jsonl');
+    mkdirSync(dirname(file), { recursive: true });
+    appendFileSync(file, JSON.stringify(entry) + '\n');
+  } catch {
+    // never let logging break the check
+  }
+}
+
+export async function verify(field, value, meta = {}) {
+  const ok = await check(field, value);
+  log({ ts: new Date().toISOString(), field, value, ok, ...meta });
+  return ok;
+}
+
+async function check(field, value) {
   switch (field) {
     case 'commit':
       return commitResolves(value);        // GitHub API: does this SHA/URL resolve?
