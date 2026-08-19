@@ -47,16 +47,33 @@ This is the one rule the whole crew depends on, so it is worth getting exactly r
 **Precedence matters more than the values.** A failing test must outrank *everything*, including a
 shipped component — otherwise a regression found after release is invisible.
 
+> **Do not count with a `count` field.** Airtable's `count` counts *linked records* — it cannot
+> filter by result. A field called `Staging Passed Count` built as a `count` returns the same
+> number as `Total Staging Tests`, always, and a formula comparing the two is permanently true.
+> Count passed rows with a **rollup** over `Testing Results`, or read the results summary as below.
+
 ```
 IF(
-  AND({Total Staging Tests} > 0, {Staging Passed Count} < {Total Staging Tests}),
+  AND({Total Staging Tests} > 0, FIND("Failed", {Staging Testing Results Summary} & "") > 0),
   "To be fixed",
+IF(
+  AND({Total Staging Tests} > 0, FIND("Fixed (To re-test)", {Staging Testing Results Summary} & "") > 0),
+  IF(FIND("Passed", {Staging Testing Results Summary} & "") = 0, "Fixed", "Fixing"),
 IF({Production Storybook}, "Completed",
-IF(AND({Total Staging Tests} > 0, {Staging Passed Count} = {Total Staging Tests}), "To be deployed",
+IF({Staging Passed Rollup} = {Total Staging Tests}, "To be deployed",
 IF({Staging Storybook}, "Ready for Testing",
 IF({Commit}, "To be staged",
-IF({Figma}, "To-do", ""))))))
+IF({Figma}, "To-do", "")))))))
 ```
+
+`{Staging Passed Rollup}` must be a **rollup** counting only rows whose `Testing Results` is
+`Passed` — not a `count`.
+
+**Why `= {Total Staging Tests}` and not `FIND("Passed", …) > 0`:** a test row created without a
+result yet is counted in the total, contributes no "Failed", and leaves at least one "Passed" in the
+summary. The looser test then reads **To be deployed** for a component whose testing is still
+half-recorded. Requiring every row to have passed is the difference between "nothing has failed" and
+"everything has passed".
 
 Treat that as a **starting point, not a drop-in** — your rollup fields may be named differently, and
 the `Fixing / Fixed` rungs need a rule for `Fixed (To re-test)` rows that depends on how you count

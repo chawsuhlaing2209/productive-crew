@@ -35,14 +35,18 @@
         "expected": "Expected Results",
         "screenshot": "Attachment",
         "suggestion": "Suggestion for Improvement",
-        "component": "Composed In"
+        "component": "Composed In",
+        "variants": "Variants",
+        "size": "Size",
+        "state": "State",
+        "context": "Context"
       },
       "tokens": {
         "baseName": "Primitives",
         "semanticName": "Tokens",
         "value": "Value",
         "parity": "Parity Status",
-        "componentTokenParity": "Testing Status"
+        "componentTokenParity": "Parity Status"
       }
     },
     "choices": {

@@ -35,7 +35,9 @@ to them and write nothing. Rows in Staging Testing assert that a deployed build 
 
 | Where | What |
 |---|---|
-| Airtable **Staging Testing** | one row per matrix row — pass *and* fail |
+| Airtable **Staging Testing** | one row per matrix row — pass *and* fail, with **Variants, Size
+  and State filled in as their own columns**, not folded into the case name. They are what makes
+  the board filterable, and a row that leaves them empty is a row nobody can slice. |
 | Airtable **Expected Results** | the finding format, on failures |
 | Asana comment | the same finding block, mirrored |
 | `governance/qa-memory.md` | quirks, recurring patterns, tooling workarounds |
