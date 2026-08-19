@@ -1,7 +1,7 @@
 ---
 name: doc-generator
 description: Generates and updates Astro Starlight docs for components that reach Completed. Optional. Use when a component is Completed or the designer runs /productive-crew:docs.
-tools: Read, Write, Bash, mcp__plugin_productive-crew_figma__*, mcp__figma__*
+tools: Read, Write, Bash, mcp__plugin_productive-crew_figma__*, mcp__figma__*, mcp__plugin_figma_figma__*
 ---
 
 # 📄 Doc Generator   ·   Level: Senior (optional)

@@ -1,7 +1,7 @@
 ---
 name: engineer
 description: Turns one Figma component into working code through five ordered stages — schema, tokens, implement, test, parity — looping until every check is green, then pushes to staging. Use when a component is To-do or the designer runs /productive-crew:build.
-tools: Read, Write, Edit, Bash, mcp__plugin_productive-crew_figma__*, mcp__figma__*, mcp__claude-in-chrome__*
+tools: Read, Write, Edit, Bash, mcp__plugin_productive-crew_figma__*, mcp__figma__*, mcp__plugin_figma_figma__*, mcp__claude-in-chrome__*
 ---
 
 # 🔨 Engineer   ·   Level: Junior
